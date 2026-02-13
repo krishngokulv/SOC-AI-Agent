@@ -1,0 +1,348 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   SOC-AI-AGENT Cyberpunk Theme Styles
+   ============================================ */
+
+/* Base layer overrides */
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #1e293b #0a0e1a;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #0a0e1a;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 3px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #00ff88;
+  }
+
+  ::selection {
+    background: rgba(0, 255, 136, 0.3);
+    color: #00ff88;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input, textarea, select {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* ============================================
+   Component Styles
+   ============================================ */
+
+@layer components {
+  /* Cyber card with glass morphism */
+  .cyber-card {
+    @apply bg-cyber-surface border border-cyber-border rounded-lg;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(
+      135deg,
+      rgba(17, 24, 39, 0.9) 0%,
+      rgba(15, 23, 42, 0.95) 100%
+    );
+  }
+
+  .cyber-card-hover {
+    @apply cyber-card transition-all duration-300;
+  }
+
+  .cyber-card-hover:hover {
+    border-color: rgba(0, 255, 136, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.08), inset 0 1px 0 rgba(0, 255, 136, 0.05);
+    transform: translateY(-1px);
+  }
+
+  /* Neon bordered input */
+  .cyber-input {
+    @apply bg-cyber-bg border border-cyber-border rounded-md px-4 py-2.5
+           text-gray-200 font-mono text-sm
+           focus:outline-none focus:border-neon-green focus:ring-1 focus:ring-neon-green/30
+           transition-all duration-200 placeholder-gray-600;
+  }
+
+  .cyber-input:focus {
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+  }
+
+  /* Primary action button */
+  .cyber-button {
+    @apply px-6 py-2.5 rounded-md font-mono font-semibold text-sm uppercase tracking-wider
+           transition-all duration-300 relative overflow-hidden;
+  }
+
+  .cyber-button-primary {
+    @apply cyber-button bg-neon-green/10 text-neon-green border border-neon-green/50;
+  }
+
+  .cyber-button-primary:hover {
+    @apply bg-neon-green/20 border-neon-green;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+  }
+
+  .cyber-button-primary:active {
+    @apply bg-neon-green/30;
+    transform: scale(0.98);
+  }
+
+  .cyber-button-danger {
+    @apply cyber-button bg-neon-red/10 text-neon-red border border-neon-red/50;
+  }
+
+  .cyber-button-danger:hover {
+    @apply bg-neon-red/20 border-neon-red;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+  }
+
+  .cyber-button-blue {
+    @apply cyber-button bg-neon-blue/10 text-neon-blue border border-neon-blue/50;
+  }
+
+  .cyber-button-blue:hover {
+    @apply bg-neon-blue/20 border-neon-blue;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply cyber-card p-5 relative overflow-hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-color, #00ff88), transparent);
+    opacity: 0.6;
+  }
+
+  /* Table styles */
+  .cyber-table {
+    @apply w-full text-sm;
+  }
+
+  .cyber-table thead {
+    @apply border-b border-cyber-border;
+  }
+
+  .cyber-table th {
+    @apply px-4 py-3 text-left text-xs font-mono font-semibold text-gray-400 uppercase tracking-wider;
+  }
+
+  .cyber-table td {
+    @apply px-4 py-3 text-gray-300 font-mono text-xs;
+  }
+
+  .cyber-table tbody tr {
+    @apply border-b border-cyber-border/50 transition-colors duration-150;
+  }
+
+  .cyber-table tbody tr:hover {
+    @apply bg-cyber-hover;
+  }
+
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold;
+  }
+
+  .badge-green {
+    @apply badge bg-neon-green/15 text-neon-green border border-neon-green/30;
+  }
+
+  .badge-red {
+    @apply badge bg-neon-red/15 text-neon-red border border-neon-red/30;
+  }
+
+  .badge-yellow {
+    @apply badge bg-neon-yellow/15 text-neon-yellow border border-neon-yellow/30;
+  }
+
+  .badge-blue {
+    @apply badge bg-neon-blue/15 text-neon-blue border border-neon-blue/30;
+  }
+
+  .badge-purple {
+    @apply badge bg-neon-purple/15 text-neon-purple border border-neon-purple/30;
+  }
+}
+
+/* ============================================
+   Utility Styles
+   ============================================ */
+
+@layer utilities {
+  /* Scanline overlay effect */
+  .scanline-overlay {
+    position: relative;
+  }
+
+  .scanline-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.03) 0px,
+      rgba(0, 0, 0, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Grid background pattern */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Glowing text */
+  .text-glow-green {
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5), 0 0 20px rgba(0, 255, 136, 0.2);
+  }
+
+  .text-glow-blue {
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.2);
+  }
+
+  .text-glow-red {
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5), 0 0 20px rgba(239, 68, 68, 0.2);
+  }
+
+  /* Neon line separator */
+  .neon-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00ff88, transparent);
+    opacity: 0.3;
+  }
+
+  /* Spinner */
+  .cyber-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 255, 136, 0.2);
+    border-top: 2px solid #00ff88;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Typing cursor */
+  .typing-cursor::after {
+    content: '|';
+    animation: blink 1s step-end infinite;
+    color: #00ff88;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Confidence bar animation */
+  .confidence-fill {
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Data flow lines */
+  .data-flow {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 255, 136, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: dataFlow 2s linear infinite;
+  }
+
+  @keyframes dataFlow {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Fade in up for staggered animations */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Hex background pattern */
+  .hex-bg {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%2300ff88' fill-opacity='0.02'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+
+/* ============================================
+   Recharts Custom Styles
+   ============================================ */
+
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #1e293b;
+  stroke-opacity: 0.5;
+}
+
+.recharts-text {
+  fill: #64748b;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+/* Page transition */
+.page-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+}

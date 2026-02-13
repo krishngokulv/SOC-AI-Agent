@@ -1,0 +1,157 @@
+<Events>
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T14:32:07.891Z"/>
+      <EventRecordID>104832</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>WORKSTATION-PC12.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1104"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1059.003,technique_name=Windows Command Shell</Data>
+      <Data Name="UtcTime">2024-01-15 14:32:07.882</Data>
+      <Data Name="ProcessGuid">{B3A285F2-7C1A-65A5-1F04-000000001A00}</Data>
+      <Data Name="ProcessId">6284</Data>
+      <Data Name="Image">C:\Windows\System32\cmd.exe</Data>
+      <Data Name="FileVersion">10.0.19041.1 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">Windows Command Processor</Data>
+      <Data Name="Product">Microsoft Windows Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">Cmd.Exe</Data>
+      <Data Name="CommandLine">cmd.exe /c "C:\Users\jdoe\Desktop\tools\mimikatz.exe"</Data>
+      <Data Name="CurrentDirectory">C:\Users\jdoe\Desktop\tools\</Data>
+      <Data Name="User">ACME\jdoe</Data>
+      <Data Name="LogonGuid">{B3A285F2-1B2C-65A5-A9B2-0D0000000000}</Data>
+      <Data Name="LogonId">0xDB2A9</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA256=E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855,MD5=8A2122E8162DBEF04694B9C3E0B6CDEE,IMPHASH=A53A02B997935FD8EEDCB5F7ABAB9B9F</Data>
+      <Data Name="ParentProcessGuid">{B3A285F2-1B45-65A5-0E01-000000001A00}</Data>
+      <Data Name="ParentProcessId">3920</Data>
+      <Data Name="ParentImage">C:\Windows\explorer.exe</Data>
+      <Data Name="ParentCommandLine">C:\Windows\explorer.exe</Data>
+      <Data Name="ParentUser">ACME\jdoe</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T14:32:08.104Z"/>
+      <EventRecordID>104833</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>WORKSTATION-PC12.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1104"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1003.001,technique_name=LSASS Memory</Data>
+      <Data Name="UtcTime">2024-01-15 14:32:08.097</Data>
+      <Data Name="ProcessGuid">{B3A285F2-7C1B-65A5-2004-000000001A00}</Data>
+      <Data Name="ProcessId">7812</Data>
+      <Data Name="Image">C:\Users\jdoe\Desktop\tools\mimikatz.exe</Data>
+      <Data Name="FileVersion">2.2.0</Data>
+      <Data Name="Description">mimikatz for Windows</Data>
+      <Data Name="Product">mimikatz</Data>
+      <Data Name="Company">gentilkiwi (Benjamin DELPY)</Data>
+      <Data Name="OriginalFileName">mimikatz.exe</Data>
+      <Data Name="CommandLine">"C:\Users\jdoe\Desktop\tools\mimikatz.exe" "privilege::debug" "sekurlsa::logonpasswords" "exit"</Data>
+      <Data Name="CurrentDirectory">C:\Users\jdoe\Desktop\tools\</Data>
+      <Data Name="User">ACME\jdoe</Data>
+      <Data Name="LogonGuid">{B3A285F2-1B2C-65A5-A9B2-0D0000000000}</Data>
+      <Data Name="LogonId">0xDB2A9</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA256=61C0810A23580CF492A6BA4F7654566108331E7A4134C968C2D6A05261B2D8A1,MD5=A3B5DE47052B4989D346A29AFCBE1A58,IMPHASH=D16AC0B23EEB9B04FE1DBFE5F4286F42</Data>
+      <Data Name="ParentProcessGuid">{B3A285F2-7C1A-65A5-1F04-000000001A00}</Data>
+      <Data Name="ParentProcessId">6284</Data>
+      <Data Name="ParentImage">C:\Windows\System32\cmd.exe</Data>
+      <Data Name="ParentCommandLine">cmd.exe /c "C:\Users\jdoe\Desktop\tools\mimikatz.exe"</Data>
+      <Data Name="ParentUser">ACME\jdoe</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>10</EventID>
+      <Version>3</Version>
+      <Level>4</Level>
+      <Task>10</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T14:32:08.437Z"/>
+      <EventRecordID>104834</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>WORKSTATION-PC12.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1104"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1003.001,technique_name=LSASS Memory</Data>
+      <Data Name="UtcTime">2024-01-15 14:32:08.431</Data>
+      <Data Name="SourceProcessGUID">{B3A285F2-7C1B-65A5-2004-000000001A00}</Data>
+      <Data Name="SourceProcessId">7812</Data>
+      <Data Name="SourceThreadId">8040</Data>
+      <Data Name="SourceImage">C:\Users\jdoe\Desktop\tools\mimikatz.exe</Data>
+      <Data Name="TargetProcessGUID">{B3A285F2-0A12-65A5-0100-000000001A00}</Data>
+      <Data Name="TargetProcessId">672</Data>
+      <Data Name="TargetImage">C:\Windows\System32\lsass.exe</Data>
+      <Data Name="GrantedAccess">0x1010</Data>
+      <Data Name="CallTrace">C:\Windows\SYSTEM32\ntdll.dll+9D4C4|C:\Windows\System32\KERNELBASE.dll+2C13E|C:\Users\jdoe\Desktop\tools\mimikatz.exe+6DC5D|C:\Users\jdoe\Desktop\tools\mimikatz.exe+6DE12|C:\Users\jdoe\Desktop\tools\mimikatz.exe+73B89|C:\Users\jdoe\Desktop\tools\mimikatz.exe+75AE6|C:\Users\jdoe\Desktop\tools\mimikatz.exe+171A6</Data>
+      <Data Name="SourceUser">ACME\jdoe</Data>
+      <Data Name="TargetUser">NT AUTHORITY\SYSTEM</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>10</EventID>
+      <Version>3</Version>
+      <Level>4</Level>
+      <Task>10</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T14:32:08.812Z"/>
+      <EventRecordID>104835</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>WORKSTATION-PC12.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1104"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1003.001,technique_name=LSASS Memory</Data>
+      <Data Name="UtcTime">2024-01-15 14:32:08.804</Data>
+      <Data Name="SourceProcessGUID">{B3A285F2-7C1B-65A5-2004-000000001A00}</Data>
+      <Data Name="SourceProcessId">7812</Data>
+      <Data Name="SourceThreadId">8040</Data>
+      <Data Name="SourceImage">C:\Users\jdoe\Desktop\tools\mimikatz.exe</Data>
+      <Data Name="TargetProcessGUID">{B3A285F2-0A12-65A5-0100-000000001A00}</Data>
+      <Data Name="TargetProcessId">672</Data>
+      <Data Name="TargetImage">C:\Windows\System32\lsass.exe</Data>
+      <Data Name="GrantedAccess">0x1FFFFF</Data>
+      <Data Name="CallTrace">C:\Windows\SYSTEM32\ntdll.dll+9D4C4|C:\Windows\System32\KERNELBASE.dll+2C13E|C:\Users\jdoe\Desktop\tools\mimikatz.exe+6DC5D|C:\Users\jdoe\Desktop\tools\mimikatz.exe+6DE12|C:\Users\jdoe\Desktop\tools\mimikatz.exe+73C21|C:\Users\jdoe\Desktop\tools\mimikatz.exe+75AE6|C:\Users\jdoe\Desktop\tools\mimikatz.exe+171A6</Data>
+      <Data Name="SourceUser">ACME\jdoe</Data>
+      <Data Name="TargetUser">NT AUTHORITY\SYSTEM</Data>
+    </EventData>
+  </Event>
+</Events>

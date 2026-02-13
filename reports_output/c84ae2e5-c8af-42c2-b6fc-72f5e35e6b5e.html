@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Investigation Report — c84ae2e5-c8af-42c2-b6fc-72f5e35e6b5e</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e1a;
+            color: #c8d6e5;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #1a2332;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #00ff88;
+            font-size: 28px;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+        .header .subtitle {
+            color: #00d4ff;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .header .meta {
+            color: #5a6c7d;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .section {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section h2 {
+            color: #00d4ff;
+            font-size: 18px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .verdict-badge {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .verdict-tp {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 2px solid #ef4444;
+        }
+        .verdict-fp {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 2px solid #22c55e;
+        }
+        .verdict-esc {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+            border: 2px solid #eab308;
+        }
+        .confidence-bar {
+            height: 8px;
+            background: #1e293b;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #1e293b;
+            font-size: 13px;
+        }
+        th {
+            background: #0f172a;
+            color: #00d4ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        tr:hover { background: rgba(0, 212, 255, 0.05); }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border-radius: 3px;
+            font-size: 11px;
+            margin: 2px;
+        }
+        .risk-high { color: #ef4444; }
+        .risk-medium { color: #eab308; }
+        .risk-low { color: #22c55e; }
+        .timeline-item {
+            padding: 12px 0 12px 24px;
+            border-left: 2px solid #1e293b;
+            position: relative;
+            margin-left: 10px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 16px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+        }
+        .timeline-item .stage {
+            color: #00d4ff;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .timeline-item .detail {
+            color: #8899aa;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .reasoning-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00d4ff;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .action-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00ff88;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .raw-content {
+            background: #0a0e1a;
+            border: 1px solid #1e293b;
+            padding: 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            color: #8899aa;
+        }
+        .mitre-link {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        .mitre-link:hover { text-decoration: underline; }
+        .executive-summary {
+            font-size: 15px;
+            color: #e2e8f0;
+            line-height: 1.8;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #4a5568;
+            font-size: 11px;
+            border-top: 1px solid #1e293b;
+            margin-top: 30px;
+        }
+        @media print {
+            body { background: #fff; color: #333; }
+            .section { border-color: #ddd; background: #f9f9f9; }
+            .header h1 { color: #1a1a2e; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>[ SOC-AI-AGENT ]</h1>
+            <div class="subtitle">Automated Investigation Report</div>
+            <div class="meta">
+                Alert ID: c84ae2e5-c8af-42c2-b6fc-72f5e35e6b5e | Generated: 2026-02-13 03:57:45 UTC
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2>Executive Summary</h2>
+            <div class="executive-summary">
+                
+                    Verdict: FALSE_POSITIVE (82.596% confidence) — benign activity (false positive). Key factors: IOC 91.195.240.12 flagged by 2 source(s) (risk score: 46.6).
+                
+            </div>
+        </div>
+
+        <!-- Verdict -->
+        <div class="section" style="text-align: center;">
+            <h2>Verdict</h2>
+            
+                
+                    <div class="verdict-badge verdict-fp">FALSE POSITIVE</div>
+                
+                <div style="margin-top: 16px; font-size: 24px; color: #e2e8f0;">
+                    Confidence: 82.6%
+                </div>
+                <div class="confidence-bar" style="max-width: 400px; margin: 12px auto;">
+                    
+                        <div class="confidence-fill" style="width: 82.6%; background: #22c55e;"></div>
+                    
+                </div>
+            
+        </div>
+
+        <!-- Alert Details -->
+        <div class="section">
+            <h2>Alert Details</h2>
+            <table>
+                <tr><th style="width: 180px;">Field</th><th>Value</th></tr>
+                <tr><td>Alert Type</td><td>firewall</td></tr>
+                <tr><td>Timestamp</td><td>2026-02-13T03:56:27.376859</td></tr>
+                <tr><td>Classification</td><td>c2_communication</td></tr>
+                <tr><td>Initial Severity</td><td>LOW</td></tr>
+                
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                
+            </table>
+        </div>
+
+        <!-- Investigation Timeline -->
+        
+        <div class="section">
+            <h2>Investigation Timeline</h2>
+            
+            <div class="timeline-item">
+                <div class="stage">Triage — Complete</div>
+                <div class="detail">Classified as c2_communication. Severity: LOW.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Ioc Extraction — Complete</div>
+                <div class="detail">Extracted 19 IOCs: {&#39;md5&#39;: 1, &#39;url&#39;: 4, &#39;email&#39;: 4, &#39;ipv4&#39;: 2, &#39;domain&#39;: 8}</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Enrichment — Complete</div>
+                <div class="detail">Enriched 19 IOCs across threat intel sources.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Correlation — Complete</div>
+                <div class="detail">No related investigations found. This appears to be a new, isolated alert.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Att&amp;ck Mapping — Complete</div>
+                <div class="detail">Matched 1 techniques across 1 tactics.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Verdict — Complete</div>
+                <div class="detail">FALSE_POSITIVE (confidence: 82.6%)</div>
+            </div>
+            
+        </div>
+        
+
+        <!-- IOC Enrichment -->
+        
+        <div class="section">
+            <h2>IOC Enrichment Results</h2>
+            <table>
+                <tr>
+                    <th>IOC</th>
+                    <th>Type</th>
+                    <th>Risk Score</th>
+                    <th>Sources Flagged</th>
+                    <th>Summary</th>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">5f4d3c2b1a0e9f8d7c6b5a4938271605</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">https://company-portal.com/verify</td>
+                    <td><span class="tag">url</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">http://evil-phish.ru/steal?id=3D12345&amp;amp</td>
+                    <td><span class="tag">url</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">https://company-portal.com/verif=</td>
+                    <td><span class="tag">url</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">http://evil-phish.ru/track?id=3D12345&amp;amp</td>
+                    <td><span class="tag">url</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">it-security-noreply@acm3-corp.com</td>
+                    <td><span class="tag">email</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">mthompson@acme-corp.com</td>
+                    <td><span class="tag">email</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">5f4d3c2b1a0e9f8d7c6b5a4938271605@acm3-corp.com</td>
+                    <td><span class="tag">email</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">it-helpdesk-verify@proton-secure-mail.ru</td>
+                    <td><span class="tag">email</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">91.195.240.12</td>
+                    <td><span class="tag">ipv4</span></td>
+                    <td>
+                        
+                            <span class="risk-medium">46.6</span>
+                        
+                    </td>
+                    <td>2 / 5</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 7/93 engines flagged as malicious. AS: SEDO GmbH, Country: DE<br>
+                        
+                            AbuseIPDB: Abuse confidence 13%, 21 reports. ISP: Sedo Domain Parking, Usage: Data Center/Web Hosting/Transit, Country: DE<br>
+                        
+                            Shodan: 2 open ports, 0 vulns. Org: Sedo Domain Parking, OS: None, Country: DE<br>
+                        
+                            OTX: 50 pulses reference this IOC. Tags: threat roundup, cndigicert sha2, checks, media center, alerts<br>
+                        
+                            GreyNoise: IP not observed scanning the internet<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">185.234.72.19</td>
+                    <td><span class="tag">ipv4</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 5</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. AS: ITP-Solutions GmbH &amp; Co. KG, Country: DE<br>
+                        
+                            AbuseIPDB: Abuse confidence 0%, 0 reports. ISP: DeinServerHost, Usage: Data Center/Web Hosting/Transit, Country: DE<br>
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            GreyNoise: IP not observed scanning the internet<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">acm3-corp.com</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: N/A<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=N/A, Created=N/A, Expires=N/A, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">acme-corp.com</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: GANDI SAS<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=GANDI SAS, Created=2002-09-25 22:07:45, Expires=2027-09-25 22:07:50, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">mx01.acme-corp.com</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: GANDI SAS<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=GANDI SAS, Created=2002-09-25 22:07:45, Expires=2027-09-25 22:07:50, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">mail.acme-corp.com</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: GANDI SAS<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=GANDI SAS, Created=2002-09-25 22:07:45, Expires=2027-09-25 22:07:50, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">mail-out.suspicious-relay.net</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: N/A<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=N/A, Created=N/A, Expires=N/A, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">proton-secure-mail.ru</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: N/A<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=N/A, Created=N/A, Expires=N/A, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">company-portal.com</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: N/A<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=Netowl, Inc., Created=2024-08-28 14:08:35, Expires=2026-08-28 14:08:35, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">evil-phish.ru</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: N/A<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=N/A, Created=N/A, Expires=N/A, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+        
+
+        <!-- MITRE ATT&CK Mapping -->
+        
+        <div class="section">
+            <h2>MITRE ATT&CK Mapping</h2>
+            <table>
+                <tr>
+                    <th>Tactic</th>
+                    <th>Technique ID</th>
+                    <th>Technique Name</th>
+                    <th>Evidence</th>
+                </tr>
+                
+                <tr>
+                    <td>Command and Control</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1090/" target="_blank">
+                            T1090
+                        </a>
+                    </td>
+                    <td>Proxy</td>
+                    <td style="font-size: 12px; font-family: monospace;">Enrichment tag: generator</td>
+                </tr>
+                
+            </table>
+            
+            <div style="margin-top: 16px; padding: 12px; background: #0a0e1a; border-radius: 4px; font-size: 13px;">
+                Attack chain analysis:<br>  1. **Command and Control**: Proxy (T1090)
+            </div>
+            
+        </div>
+        
+
+        <!-- Correlation -->
+        
+
+        <!-- Reasoning Chain -->
+        
+        <div class="section">
+            <h2>Reasoning Chain</h2>
+            
+            <div class="reasoning-item">IOC 91.195.240.12 flagged by 2 source(s) (risk score: 46.6).</div>
+            
+            <div class="reasoning-item">No significant behavioral indicators detected.</div>
+            
+            <div class="reasoning-item">No historical correlation data available.</div>
+            
+            <div class="reasoning-item">Matched 1 MITRE ATT&amp;CK technique(s) across 1 tactic(s).</div>
+            
+            <div class="reasoning-item">Alert occurred during off-hours (03:00). Slightly elevated risk.</div>
+            
+
+            
+            <h3 style="color: #00d4ff; margin-top: 16px; font-size: 14px;">Score Breakdown</h3>
+            <table>
+                <tr><th>Component</th><th>Score</th><th>Weight</th><th>Weighted Score</th></tr>
+                
+                <tr>
+                    <td>Enrichment</td>
+                    <td>46.6</td>
+                    <td>35.0%</td>
+                    <td>16.3</td>
+                </tr>
+                
+                <tr>
+                    <td>Behavioral</td>
+                    <td>0.0</td>
+                    <td>25.0%</td>
+                    <td>0.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Correlation</td>
+                    <td>0.0</td>
+                    <td>20.0%</td>
+                    <td>0.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Mitre</td>
+                    <td>8</td>
+                    <td>15.0%</td>
+                    <td>1.2</td>
+                </tr>
+                
+                <tr>
+                    <td>Temporal</td>
+                    <td>20.0</td>
+                    <td>5.0%</td>
+                    <td>1.0</td>
+                </tr>
+                
+            </table>
+            
+        </div>
+        
+
+        <!-- Recommended Actions -->
+        
+        <div class="section">
+            <h2>Recommended Response Actions</h2>
+            
+            <div class="action-item">1. No immediate action required.</div>
+            
+            <div class="action-item">2. Consider adding to allowlist/exception list if recurring.</div>
+            
+            <div class="action-item">3. Document the false positive for tuning detection rules.</div>
+            
+        </div>
+        
+
+        <!-- Raw Evidence -->
+        <div class="section">
+            <h2>Raw Evidence</h2>
+            <div class="raw-content">Return-Path: &lt;it-security-noreply@acm3-corp.com&gt;
+Delivered-To: mthompson@acme-corp.com
+Received: from mx01.acme-corp.com (mx01.acme-corp.com [10.0.0.25])
+	by mail.acme-corp.com (Postfix) with ESMTPS id 4T2BxR6QKMz9vGH
+	for &lt;mthompson@acme-corp.com&gt;; Mon, 15 Jan 2024 08:45:12 -0500 (EST)
+Received: from mail-out.suspicious-relay.net (mail-out.suspicious-relay.net [91.195.240.12])
+	by mx01.acme-corp.com (Postfix) with ESMTP id 4T2BxQ3FfKz3kLN
+	for &lt;mthompson@acme-corp.com&gt;; Mon, 15 Jan 2024 08:45:11 -0500 (EST)
+Received: from localhost (unknown [185.234.72.19])
+	by mail-out.suspicious-relay.net (Postfix) with ESMTPA id 8B34A2E019F
+	for &lt;mthompson@acme-corp.com&gt;; Mon, 15 Jan 2024 13:45:09 +0000 (UTC)
+Authentication-Results: mx01.acme-corp.com;
+	spf=fail (sender IP is 91.195.240.12) smtp.mailfrom=acm3-corp.com smtp.helo=mail-out.suspicious-relay.net;
+	dkim=none;
+	dmarc=fail (p=none dis=none) header.from=acm3-corp.com
+X-Spam-Status: Yes, score=8.7 required=5.0 tests=BAYES_99,DKIM_NONE,
+	SPF_FAIL,SUSPICIOUS_LINK,FROM_DISPLAY_SPOOF,PHISH_AZUREBLOBSTORAGE
+	autolearn=spam autolearn_force=no version=3.4.6
+X-Spam-Score: 8.7
+Message-ID: &lt;5f4d3c2b1a0e9f8d7c6b5a4938271605@acm3-corp.com&gt;
+Date: Mon, 15 Jan 2024 13:45:08 +0000
+From: &#34;ACME Corp IT Security Team&#34; &lt;it-security-noreply@acm3-corp.com&gt;
+Reply-To: it-helpdesk-verify@proton-secure-mail.ru
+To: mthompson@acme-corp.com
+Subject: [URGENT] Mandatory Password Reset Required - Account Compromise Detected
+X-Mailer: Microsoft Outlook 16.0
+X-Priority: 1 (Highest)
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary=&#34;----=_Part_8847_1052394812.1705322708&#34;
+
+------=_Part_8847_1052394812.1705322708
+Content-Type: text/plain; charset=&#34;UTF-8&#34;
+Content-Transfer-Encoding: 7bit
+
+ACME Corp IT Security Alert
+
+Dear Employee,
+
+Our security monitoring systems have detected suspicious activity on your corporate account. As a precautionary measure, you are required to verify your identity and reset your password within the next 24 hours.
+
+Failure to complete this verification will result in your account being temporarily suspended per our IT Security Policy (Section 4.2.1).
+
+Please verify your account immediately:
+https://company-portal.com/verify
+
+This is an automated message from the ACME Corp IT Security Team.
+Do not reply to this email.
+
+Regards,
+IT Security Operations Center
+ACME Corporation
+Phone: +1 (555) 012-3456
+
+------=_Part_8847_1052394812.1705322708
+Content-Type: text/html; charset=&#34;UTF-8&#34;
+Content-Transfer-Encoding: quoted-printable
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=3D&#34;Content-Type&#34; content=3D&#34;text/html; charset=3DUTF-8&#34;&gt;
+&lt;/head&gt;
+&lt;body style=3D&#34;font-family: Calibri, Arial, sans-serif; color: #333333; ba=
+ckground-color: #f5f5f5; margin: 0; padding: 0;&#34;&gt;
+&lt;table width=3D&#34;100%&#34; cellpadding=3D&#34;0&#34; cellspacing=3D&#34;0&#34; style=3D&#34;max-wid=
+th: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid=
+ #dddddd;&#34;&gt;
+&lt;tr&gt;
+&lt;td style=3D&#34;background-color: #003366; padding: 20px; text-align: center;=
+&#34;&gt;
+&lt;img src=3D&#34;cid:logo_placeholder&#34; alt=3D&#34;ACME Corp&#34; style=3D&#34;height: 40px;=
+&#34; onerror=3D&#34;this.style.display=3D&#39;none&#39;&#34;&gt;
+&lt;h2 style=3D&#34;color: #ffffff; margin: 10px 0 0 0;&#34;&gt;IT Security Alert&lt;/h2&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=3D&#34;padding: 30px;&#34;&gt;
+&lt;p style=3D&#34;font-size: 14px;&#34;&gt;Dear Employee,&lt;/p&gt;
+
+&lt;p style=3D&#34;font-size: 14px;&#34;&gt;Our security monitoring systems have detected=
+ &lt;strong style=3D&#34;color: #cc0000;&#34;&gt;suspicious activity&lt;/strong&gt; on your cor=
+porate account. As a precautionary measure, you are required to verify your=
+ identity and reset your password within the next &lt;strong&gt;24 hours&lt;/strong&gt;=
+.&lt;/p&gt;
+
+&lt;p style=3D&#34;font-size: 14px; background-color: #fff3cd; border: 1px solid =
+#ffc107; padding: 10px; border-radius: 4px;&#34;&gt;&lt;strong&gt;=E2=9A=A0 Warning:&lt;/s=
+trong&gt; Failure to complete this verification will result in your account be=
+ing temporarily suspended per our IT Security Policy (Section 4.2.1).&lt;/p&gt;
+
+&lt;table cellpadding=3D&#34;0&#34; cellspacing=3D&#34;0&#34; style=3D&#34;margin: 25px auto;&#34;&gt;
+&lt;tr&gt;
+&lt;td style=3D&#34;background-color: #003366; border-radius: 4px; padding: 12px =
+30px; text-align: center;&#34;&gt;
+&lt;a href=3D&#34;http://evil-phish.ru/steal?id=3D12345&amp;amp;user=3Dmthompson&amp;amp;=
+ts=3D1705322708&#34; style=3D&#34;color: #ffffff; text-decoration: none; font-size:=
+ 16px; font-weight: bold; display: block;&#34;&gt;https://company-portal.com/verif=
+y&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p style=3D&#34;font-size: 12px; color: #666666;&#34;&gt;This is an automated message=
+ from the ACME Corp IT Security Team.&lt;br&gt;Do not reply to this email. If you=
+ believe this is an error, contact the helpdesk at ext. 4357.&lt;/p&gt;
+
+&lt;hr style=3D&#34;border: none; border-top: 1px solid #dddddd; margin: 20px 0;&#34;=
+&gt;
+&lt;p style=3D&#34;font-size: 11px; color: #999999;&#34;&gt;
+ACME Corporation | 1234 Corporate Blvd, Suite 500 | New York, NY 10001&lt;br&gt;
+This email and any attachments are confidential. If you are not the intende=
+d recipient, please notify the sender and delete this message.
+&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;!-- Tracking pixel --&gt;
+&lt;img src=3D&#34;http://evil-phish.ru/track?id</div>
+        </div>
+
+        <div class="footer">
+            Generated by SOC-AI-Agent | Automated Security Investigation Platform<br>
+            Report generated at 2026-02-13 03:57:45 UTC
+        </div>
+    </div>
+</body>
+</html>

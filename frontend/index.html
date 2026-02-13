@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0e1a" />
+    <meta name="description" content="SOC AI Agent - Autonomous Security Operations Center" />
+    <title>SOC-AI-AGENT // Autonomous Threat Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0a0e1a;
+        color: #e2e8f0;
+        overflow: hidden;
+      }
+      #root {
+        height: 100vh;
+        width: 100vw;
+      }
+      /* Loading screen */
+      .boot-screen {
+        position: fixed;
+        inset: 0;
+        background: #0a0e1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-family: 'JetBrains Mono', monospace;
+        color: #00ff88;
+        z-index: 9999;
+      }
+      .boot-screen .logo-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        animation: bootPulse 1.5s ease-in-out infinite;
+      }
+      .boot-screen .status {
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-top: 1rem;
+      }
+      @keyframes bootPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="boot-screen">
+        <div class="logo-text">[SOC-AI-AGENT]</div>
+        <div class="status">Initializing neural threat engine...</div>
+      </div>
+    </div>
+    <script type="module" src="/src/index.jsx"></script>
+  </body>
+</html>

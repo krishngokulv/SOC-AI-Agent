@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Investigation Report — {{ alert_id }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e1a;
+            color: #c8d6e5;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #1a2332;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #00ff88;
+            font-size: 28px;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+        .header .subtitle {
+            color: #00d4ff;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .header .meta {
+            color: #5a6c7d;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .section {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section h2 {
+            color: #00d4ff;
+            font-size: 18px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .verdict-badge {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .verdict-tp {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 2px solid #ef4444;
+        }
+        .verdict-fp {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 2px solid #22c55e;
+        }
+        .verdict-esc {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+            border: 2px solid #eab308;
+        }
+        .confidence-bar {
+            height: 8px;
+            background: #1e293b;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #1e293b;
+            font-size: 13px;
+        }
+        th {
+            background: #0f172a;
+            color: #00d4ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        tr:hover { background: rgba(0, 212, 255, 0.05); }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border-radius: 3px;
+            font-size: 11px;
+            margin: 2px;
+        }
+        .risk-high { color: #ef4444; }
+        .risk-medium { color: #eab308; }
+        .risk-low { color: #22c55e; }
+        .timeline-item {
+            padding: 12px 0 12px 24px;
+            border-left: 2px solid #1e293b;
+            position: relative;
+            margin-left: 10px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 16px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+        }
+        .timeline-item .stage {
+            color: #00d4ff;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .timeline-item .detail {
+            color: #8899aa;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .reasoning-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00d4ff;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .action-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00ff88;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .raw-content {
+            background: #0a0e1a;
+            border: 1px solid #1e293b;
+            padding: 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            color: #8899aa;
+        }
+        .mitre-link {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        .mitre-link:hover { text-decoration: underline; }
+        .executive-summary {
+            font-size: 15px;
+            color: #e2e8f0;
+            line-height: 1.8;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #4a5568;
+            font-size: 11px;
+            border-top: 1px solid #1e293b;
+            margin-top: 30px;
+        }
+        @media print {
+            body { background: #fff; color: #333; }
+            .section { border-color: #ddd; background: #f9f9f9; }
+            .header h1 { color: #1a1a2e; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>[ SOC-AI-AGENT ]</h1>
+            <div class="subtitle">Automated Investigation Report</div>
+            <div class="meta">
+                Alert ID: {{ alert_id }} | Generated: {{ generated_at }}
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2>Executive Summary</h2>
+            <div class="executive-summary">
+                {% if verdict_data %}
+                    {{ verdict_data.reasoning_summary | default('Investigation complete. See details below.') }}
+                {% else %}
+                    Investigation complete. See details below.
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Verdict -->
+        <div class="section" style="text-align: center;">
+            <h2>Verdict</h2>
+            {% if verdict_data %}
+                {% if verdict_data.verdict == 'TRUE_POSITIVE' %}
+                    <div class="verdict-badge verdict-tp">TRUE POSITIVE</div>
+                {% elif verdict_data.verdict == 'FALSE_POSITIVE' %}
+                    <div class="verdict-badge verdict-fp">FALSE POSITIVE</div>
+                {% else %}
+                    <div class="verdict-badge verdict-esc">NEEDS ESCALATION</div>
+                {% endif %}
+                <div style="margin-top: 16px; font-size: 24px; color: #e2e8f0;">
+                    Confidence: {{ verdict_data.confidence }}%
+                </div>
+                <div class="confidence-bar" style="max-width: 400px; margin: 12px auto;">
+                    {% if verdict_data.verdict == 'TRUE_POSITIVE' %}
+                        <div class="confidence-fill" style="width: {{ verdict_data.confidence }}%; background: #ef4444;"></div>
+                    {% elif verdict_data.verdict == 'FALSE_POSITIVE' %}
+                        <div class="confidence-fill" style="width: {{ verdict_data.confidence }}%; background: #22c55e;"></div>
+                    {% else %}
+                        <div class="confidence-fill" style="width: {{ verdict_data.confidence }}%; background: #eab308;"></div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="verdict-badge verdict-esc">PENDING</div>
+            {% endif %}
+        </div>
+
+        <!-- Alert Details -->
+        <div class="section">
+            <h2>Alert Details</h2>
+            <table>
+                <tr><th style="width: 180px;">Field</th><th>Value</th></tr>
+                <tr><td>Alert Type</td><td>{{ alert_type | default('N/A') }}</td></tr>
+                <tr><td>Timestamp</td><td>{{ timestamp | default('N/A') }}</td></tr>
+                <tr><td>Classification</td><td>{{ triage_data.classification | default('N/A') if triage_data else 'N/A' }}</td></tr>
+                <tr><td>Initial Severity</td><td>{{ triage_data.severity | default('N/A') if triage_data else 'N/A' }}</td></tr>
+                {% if alert_data %}
+                    {% if alert_data.source_ip %}<tr><td>Source IP</td><td>{{ alert_data.source_ip }}</td></tr>{% endif %}
+                    {% if alert_data.dest_ip %}<tr><td>Destination IP</td><td>{{ alert_data.dest_ip }}</td></tr>{% endif %}
+                    {% if alert_data.source_host %}<tr><td>Source Host</td><td>{{ alert_data.source_host }}</td></tr>{% endif %}
+                    {% if alert_data.user %}<tr><td>User</td><td>{{ alert_data.user }}</td></tr>{% endif %}
+                    {% if alert_data.process_name %}<tr><td>Process</td><td>{{ alert_data.process_name }}</td></tr>{% endif %}
+                    {% if alert_data.command_line %}<tr><td>Command Line</td><td style="font-family: monospace; font-size: 12px;">{{ alert_data.command_line }}</td></tr>{% endif %}
+                    {% if alert_data.parent_process %}<tr><td>Parent Process</td><td>{{ alert_data.parent_process }}</td></tr>{% endif %}
+                {% endif %}
+            </table>
+        </div>
+
+        <!-- Investigation Timeline -->
+        {% if timeline %}
+        <div class="section">
+            <h2>Investigation Timeline</h2>
+            {% for step in timeline %}
+            <div class="timeline-item">
+                <div class="stage">{{ step.stage | title }} — {{ step.status }}</div>
+                <div class="detail">{{ step.detail | default('') }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- IOC Enrichment -->
+        {% if enrichment_results %}
+        <div class="section">
+            <h2>IOC Enrichment Results</h2>
+            <table>
+                <tr>
+                    <th>IOC</th>
+                    <th>Type</th>
+                    <th>Risk Score</th>
+                    <th>Sources Flagged</th>
+                    <th>Summary</th>
+                </tr>
+                {% for ioc in enrichment_results %}
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">{{ ioc.value }}</td>
+                    <td><span class="tag">{{ ioc.type }}</span></td>
+                    <td>
+                        {% if ioc.risk_score >= 70 %}
+                            <span class="risk-high">{{ ioc.risk_score }}</span>
+                        {% elif ioc.risk_score >= 40 %}
+                            <span class="risk-medium">{{ ioc.risk_score }}</span>
+                        {% else %}
+                            <span class="risk-low">{{ ioc.risk_score }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ ioc.malicious_count | default(0) }} / {{ ioc.sources_checked | default(0) }}</td>
+                    <td style="font-size: 12px;">
+                        {% for result in ioc.enrichment_results | default([]) %}
+                            {% if result.summary %}{{ result.summary }}<br>{% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+
+        <!-- MITRE ATT&CK Mapping -->
+        {% if mitre_data and mitre_data.techniques %}
+        <div class="section">
+            <h2>MITRE ATT&CK Mapping</h2>
+            <table>
+                <tr>
+                    <th>Tactic</th>
+                    <th>Technique ID</th>
+                    <th>Technique Name</th>
+                    <th>Evidence</th>
+                </tr>
+                {% for tech in mitre_data.techniques %}
+                <tr>
+                    <td>{{ tech.tactic }}</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/{{ tech.technique_id | replace('.', '/') }}/" target="_blank">
+                            {{ tech.technique_id }}
+                        </a>
+                    </td>
+                    <td>{{ tech.name }}</td>
+                    <td style="font-size: 12px; font-family: monospace;">{{ tech.evidence | default('') }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% if mitre_data.narrative %}
+            <div style="margin-top: 16px; padding: 12px; background: #0a0e1a; border-radius: 4px; font-size: 13px;">
+                {{ mitre_data.narrative | replace('\n', '<br>') | safe }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Correlation -->
+        {% if correlation_data and correlation_data.related_count > 0 %}
+        <div class="section">
+            <h2>Historical Correlation</h2>
+            <p style="margin-bottom: 12px;">{{ correlation_data.correlation_summary }}</p>
+            {% if correlation_data.related_investigations %}
+            <table>
+                <tr>
+                    <th>Alert ID</th>
+                    <th>Type</th>
+                    <th>Verdict</th>
+                    <th>Matching IOC</th>
+                    <th>Date</th>
+                </tr>
+                {% for inv in correlation_data.related_investigations[:10] %}
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">{{ inv.alert_id[:8] }}...</td>
+                    <td>{{ inv.alert_type }}</td>
+                    <td>
+                        {% if inv.verdict == 'TRUE_POSITIVE' %}
+                            <span class="risk-high">{{ inv.verdict }}</span>
+                        {% elif inv.verdict == 'FALSE_POSITIVE' %}
+                            <span class="risk-low">{{ inv.verdict }}</span>
+                        {% else %}
+                            <span class="risk-medium">{{ inv.verdict }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">{{ inv.matching_ioc }}</td>
+                    <td>{{ inv.timestamp }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Reasoning Chain -->
+        {% if verdict_data and verdict_data.reasoning %}
+        <div class="section">
+            <h2>Reasoning Chain</h2>
+            {% for reason in verdict_data.reasoning %}
+            <div class="reasoning-item">{{ reason }}</div>
+            {% endfor %}
+
+            {% if verdict_data.score_breakdown %}
+            <h3 style="color: #00d4ff; margin-top: 16px; font-size: 14px;">Score Breakdown</h3>
+            <table>
+                <tr><th>Component</th><th>Score</th><th>Weight</th><th>Weighted Score</th></tr>
+                {% for comp_name, comp in verdict_data.score_breakdown.items() %}
+                <tr>
+                    <td>{{ comp_name | title }}</td>
+                    <td>{{ comp.score }}</td>
+                    <td>{{ (comp.weight * 100) | round }}%</td>
+                    <td>{{ (comp.score * comp.weight) | round(1) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Recommended Actions -->
+        {% if verdict_data and verdict_data.recommended_actions %}
+        <div class="section">
+            <h2>Recommended Response Actions</h2>
+            {% for action in verdict_data.recommended_actions %}
+            <div class="action-item">{{ loop.index }}. {{ action }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Raw Evidence -->
+        <div class="section">
+            <h2>Raw Evidence</h2>
+            <div class="raw-content">{{ raw_alert | default('No raw alert data available.') | e }}</div>
+        </div>
+
+        <div class="footer">
+            Generated by SOC-AI-Agent | Automated Security Investigation Platform<br>
+            Report generated at {{ generated_at }}
+        </div>
+    </div>
+</body>
+</html>

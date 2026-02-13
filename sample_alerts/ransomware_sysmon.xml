@@ -1,0 +1,356 @@
+<Events>
+  <!-- Stage 1: Initial execution of ransomware dropper -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:18.204Z"/>
+      <EventRecordID>112450</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1204.002,technique_name=Malicious File</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:18.192</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ProcessId">9412</Data>
+      <Data Name="Image">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="FileVersion">1.0.0.0</Data>
+      <Data Name="Description"/>
+      <Data Name="Product"/>
+      <Data Name="Company"/>
+      <Data Name="OriginalFileName">cryptolocker_v3.exe</Data>
+      <Data Name="CommandLine">"C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe"</Data>
+      <Data Name="CurrentDirectory">C:\Users\rjones\Downloads\</Data>
+      <Data Name="User">ACME\rjones</Data>
+      <Data Name="LogonGuid">{A1F23B4C-2D1A-65A5-E2A4-070000000000}</Data>
+      <Data Name="LogonId">0x7A4E2</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA256=3F2B4A5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C4D5E6F7A8B9C0D1E2F,MD5=9E8D7C6B5A4F3E2D1C0B9A8F7E6D5C4B,IMPHASH=2C41D8394A2A7DE5AE4F1DE118360FF8</Data>
+      <Data Name="ParentProcessGuid">{A1F23B4C-2D30-65A5-0F01-000000002200}</Data>
+      <Data Name="ParentProcessId">4120</Data>
+      <Data Name="ParentImage">C:\Windows\explorer.exe</Data>
+      <Data Name="ParentCommandLine">C:\Windows\explorer.exe</Data>
+      <Data Name="ParentUser">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <!-- Stage 2: Delete Volume Shadow Copies -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:19.871Z"/>
+      <EventRecordID>112451</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1490,technique_name=Inhibit System Recovery</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:19.860</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D30-65A5-4B08-000000002200}</Data>
+      <Data Name="ProcessId">9504</Data>
+      <Data Name="Image">C:\Windows\System32\vssadmin.exe</Data>
+      <Data Name="FileVersion">10.0.19041.1 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">Command Line Interface for Microsoft Volume Shadow Copy Service</Data>
+      <Data Name="Product">Microsoft Windows Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">VSSADMIN.EXE</Data>
+      <Data Name="CommandLine">vssadmin.exe delete shadows /all /quiet</Data>
+      <Data Name="CurrentDirectory">C:\Users\rjones\AppData\Local\Temp\</Data>
+      <Data Name="User">ACME\rjones</Data>
+      <Data Name="LogonGuid">{A1F23B4C-2D1A-65A5-E2A4-070000000000}</Data>
+      <Data Name="LogonId">0x7A4E2</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA256=B6E66B47F7A236E1EABC25C5CF9581BA7CD988DB8A3B74EDA3D1AC651AE62E57,MD5=2A40B2668ED9B73C8D0E6C9B0E1DFAB0,IMPHASH=67F87B343F1E84C7F88B182F35C8E5FF</Data>
+      <Data Name="ParentProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ParentProcessId">9412</Data>
+      <Data Name="ParentImage">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="ParentCommandLine">"C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe"</Data>
+      <Data Name="ParentUser">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <!-- Stage 3: Disable recovery mode via bcdedit -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:20.542Z"/>
+      <EventRecordID>112452</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1490,technique_name=Inhibit System Recovery</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:20.530</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D31-65A5-4C08-000000002200}</Data>
+      <Data Name="ProcessId">9588</Data>
+      <Data Name="Image">C:\Windows\System32\bcdedit.exe</Data>
+      <Data Name="FileVersion">10.0.19041.1 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">Boot Configuration Data Editor</Data>
+      <Data Name="Product">Microsoft Windows Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">bcdedit.exe</Data>
+      <Data Name="CommandLine">bcdedit.exe /set {default} recoveryenabled no</Data>
+      <Data Name="CurrentDirectory">C:\Users\rjones\AppData\Local\Temp\</Data>
+      <Data Name="User">ACME\rjones</Data>
+      <Data Name="LogonGuid">{A1F23B4C-2D1A-65A5-E2A4-070000000000}</Data>
+      <Data Name="LogonId">0x7A4E2</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA256=A1F3D2C4B5E6F7A8B9C0D1E2F3A4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1,MD5=0FD5C9A25AAE055C1F8F5A8AE76C00C2,IMPHASH=12B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7</Data>
+      <Data Name="ParentProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ParentProcessId">9412</Data>
+      <Data Name="ParentImage">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="ParentCommandLine">"C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe"</Data>
+      <Data Name="ParentUser">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <!-- Stage 4: Disable boot status policy -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:21.108Z"/>
+      <EventRecordID>112453</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1490,technique_name=Inhibit System Recovery</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:21.095</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D32-65A5-4D08-000000002200}</Data>
+      <Data Name="ProcessId">9620</Data>
+      <Data Name="Image">C:\Windows\System32\bcdedit.exe</Data>
+      <Data Name="FileVersion">10.0.19041.1 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">Boot Configuration Data Editor</Data>
+      <Data Name="Product">Microsoft Windows Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">bcdedit.exe</Data>
+      <Data Name="CommandLine">bcdedit.exe /set {default} bootstatuspolicy ignoreallfailures</Data>
+      <Data Name="CurrentDirectory">C:\Users\rjones\AppData\Local\Temp\</Data>
+      <Data Name="User">ACME\rjones</Data>
+      <Data Name="LogonGuid">{A1F23B4C-2D1A-65A5-E2A4-070000000000}</Data>
+      <Data Name="LogonId">0x7A4E2</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA256=A1F3D2C4B5E6F7A8B9C0D1E2F3A4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1,MD5=0FD5C9A25AAE055C1F8F5A8AE76C00C2,IMPHASH=12B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7</Data>
+      <Data Name="ParentProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ParentProcessId">9412</Data>
+      <Data Name="ParentImage">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="ParentCommandLine">"C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe"</Data>
+      <Data Name="ParentUser">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <!-- Stage 5: File encryption - mass .locked file creation events -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>11</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>11</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:22.304Z"/>
+      <EventRecordID>112454</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1486,technique_name=Data Encrypted for Impact</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:22.291</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ProcessId">9412</Data>
+      <Data Name="Image">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="TargetFilename">C:\Users\rjones\Documents\Financial_Report_Q4_2023.xlsx.locked</Data>
+      <Data Name="CreationUtcTime">2024-01-15 16:42:22.291</Data>
+      <Data Name="User">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>11</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>11</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:22.412Z"/>
+      <EventRecordID>112455</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1486,technique_name=Data Encrypted for Impact</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:22.401</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ProcessId">9412</Data>
+      <Data Name="Image">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="TargetFilename">C:\Users\rjones\Documents\Budget_Projections_2024.docx.locked</Data>
+      <Data Name="CreationUtcTime">2024-01-15 16:42:22.401</Data>
+      <Data Name="User">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>11</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>11</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:22.518Z"/>
+      <EventRecordID>112456</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1486,technique_name=Data Encrypted for Impact</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:22.507</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ProcessId">9412</Data>
+      <Data Name="Image">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="TargetFilename">C:\Users\rjones\Documents\Employee_Salaries_Confidential.pdf.locked</Data>
+      <Data Name="CreationUtcTime">2024-01-15 16:42:22.507</Data>
+      <Data Name="User">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>11</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>11</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:22.631Z"/>
+      <EventRecordID>112457</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1486,technique_name=Data Encrypted for Impact</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:22.619</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ProcessId">9412</Data>
+      <Data Name="Image">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="TargetFilename">C:\Users\rjones\Documents\Client_Contracts_2023.zip.locked</Data>
+      <Data Name="CreationUtcTime">2024-01-15 16:42:22.619</Data>
+      <Data Name="User">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>11</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>11</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:22.740Z"/>
+      <EventRecordID>112458</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1486,technique_name=Data Encrypted for Impact</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:22.728</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ProcessId">9412</Data>
+      <Data Name="Image">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="TargetFilename">C:\Users\rjones\Documents\Strategic_Plan_Presentation.pptx.locked</Data>
+      <Data Name="CreationUtcTime">2024-01-15 16:42:22.728</Data>
+      <Data Name="User">ACME\rjones</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>11</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>11</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T16:42:22.855Z"/>
+      <EventRecordID>112459</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>ACCT-WS07.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1189"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1486,technique_name=Data Encrypted for Impact</Data>
+      <Data Name="UtcTime">2024-01-15 16:42:22.843</Data>
+      <Data Name="ProcessGuid">{A1F23B4C-9D2E-65A5-4A08-000000002200}</Data>
+      <Data Name="ProcessId">9412</Data>
+      <Data Name="Image">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</Data>
+      <Data Name="TargetFilename">C:\Users\rjones\Documents\DECRYPT_YOUR_FILES.txt</Data>
+      <Data Name="CreationUtcTime">2024-01-15 16:42:22.843</Data>
+      <Data Name="User">ACME\rjones</Data>
+    </EventData>
+  </Event>
+</Events>

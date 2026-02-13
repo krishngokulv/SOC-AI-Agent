@@ -1,0 +1,277 @@
+<Events>
+  <!-- Event 1: PsExec copied to remote host via SMB (source machine) -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>3</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>3</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T11:28:04.512Z"/>
+      <EventRecordID>87201</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>IT-ADMIN-WS01.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1105"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1021.002,technique_name=SMB/Windows Admin Shares</Data>
+      <Data Name="UtcTime">2024-01-15 11:28:04.498</Data>
+      <Data Name="ProcessGuid">{D5E6F7A8-4B1C-65A5-0912-000000001800}</Data>
+      <Data Name="ProcessId">3248</Data>
+      <Data Name="Image">C:\Tools\SysinternalsSuite\PsExec64.exe</Data>
+      <Data Name="User">ACME\svc-admin</Data>
+      <Data Name="Protocol">tcp</Data>
+      <Data Name="Initiated">true</Data>
+      <Data Name="SourceIsIpv6">false</Data>
+      <Data Name="SourceIp">10.0.1.25</Data>
+      <Data Name="SourceHostname">IT-ADMIN-WS01.corp.acme.local</Data>
+      <Data Name="SourcePort">49842</Data>
+      <Data Name="SourcePortName"/>
+      <Data Name="DestinationIsIpv6">false</Data>
+      <Data Name="DestinationIp">10.0.2.100</Data>
+      <Data Name="DestinationHostname">FILE-SRV01.corp.acme.local</Data>
+      <Data Name="DestinationPort">445</Data>
+      <Data Name="DestinationPortName">microsoft-ds</Data>
+    </EventData>
+  </Event>
+
+  <!-- Event 2: PsExec process creation on source (initiating connection) -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T11:28:03.201Z"/>
+      <EventRecordID>87200</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>IT-ADMIN-WS01.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1105"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1570,technique_name=Lateral Tool Transfer</Data>
+      <Data Name="UtcTime">2024-01-15 11:28:03.188</Data>
+      <Data Name="ProcessGuid">{D5E6F7A8-4B1C-65A5-0912-000000001800}</Data>
+      <Data Name="ProcessId">3248</Data>
+      <Data Name="Image">C:\Tools\SysinternalsSuite\PsExec64.exe</Data>
+      <Data Name="FileVersion">2.43</Data>
+      <Data Name="Description">Execute processes remotely</Data>
+      <Data Name="Product">Sysinternals PsExec</Data>
+      <Data Name="Company">Sysinternals - www.sysinternals.com</Data>
+      <Data Name="OriginalFileName">psexec.c</Data>
+      <Data Name="CommandLine">PsExec64.exe \\10.0.2.100 -u ACME\svc-admin -p ******* -s cmd.exe /c "net user backdoor P@ssw0rd123 /add &amp;&amp; net localgroup administrators backdoor /add"</Data>
+      <Data Name="CurrentDirectory">C:\Tools\SysinternalsSuite\</Data>
+      <Data Name="User">ACME\svc-admin</Data>
+      <Data Name="LogonGuid">{D5E6F7A8-1A2B-65A5-F1D2-030000000000}</Data>
+      <Data Name="LogonId">0x3D2F1</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">High</Data>
+      <Data Name="Hashes">SHA256=AD6B98C01DC3A1C96E9652DFC7B2F05CCAE1673D8D2A4E2D8F91F5E97C6C7E41,MD5=27304B246C7D5B4E149124D5F93C5B01,IMPHASH=E96A73C7BF33A464C510EDE582318BF2</Data>
+      <Data Name="ParentProcessGuid">{D5E6F7A8-1A40-65A5-0201-000000001800}</Data>
+      <Data Name="ParentProcessId">5640</Data>
+      <Data Name="ParentImage">C:\Windows\System32\cmd.exe</Data>
+      <Data Name="ParentCommandLine">"C:\Windows\System32\cmd.exe"</Data>
+      <Data Name="ParentUser">ACME\svc-admin</Data>
+    </EventData>
+  </Event>
+
+  <!-- Event 3: PSEXESVC service installed on target (observed on target host) -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>13</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>13</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T11:28:05.710Z"/>
+      <EventRecordID>45302</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="1892" ThreadID="2108"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FILE-SRV01.corp.acme.local</Computer>
+      <Security UserID="S-1-5-18"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1543.003,technique_name=Windows Service</Data>
+      <Data Name="EventType">SetValue</Data>
+      <Data Name="UtcTime">2024-01-15 11:28:05.698</Data>
+      <Data Name="ProcessGuid">{E7F8A9B0-4B1D-65A5-0A01-000000002400}</Data>
+      <Data Name="ProcessId">648</Data>
+      <Data Name="Image">C:\Windows\system32\services.exe</Data>
+      <Data Name="TargetObject">HKLM\System\CurrentControlSet\Services\PSEXESVC\ImagePath</Data>
+      <Data Name="Details">%SystemRoot%\PSEXESVC.exe</Data>
+      <Data Name="User">NT AUTHORITY\SYSTEM</Data>
+    </EventData>
+  </Event>
+
+  <!-- Event 4: PSEXESVC service binary creation on target -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>11</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>11</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T11:28:05.320Z"/>
+      <EventRecordID>45301</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="1892" ThreadID="2108"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FILE-SRV01.corp.acme.local</Computer>
+      <Security UserID="S-1-5-18"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1570,technique_name=Lateral Tool Transfer</Data>
+      <Data Name="UtcTime">2024-01-15 11:28:05.308</Data>
+      <Data Name="ProcessGuid">{E7F8A9B0-0A12-65A5-0100-000000002400}</Data>
+      <Data Name="ProcessId">4</Data>
+      <Data Name="Image">System</Data>
+      <Data Name="TargetFilename">C:\Windows\PSEXESVC.exe</Data>
+      <Data Name="CreationUtcTime">2024-01-15 11:28:05.308</Data>
+      <Data Name="User">NT AUTHORITY\SYSTEM</Data>
+    </EventData>
+  </Event>
+
+  <!-- Event 5: PSEXESVC process starts on target -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T11:28:06.015Z"/>
+      <EventRecordID>45303</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="1892" ThreadID="2108"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FILE-SRV01.corp.acme.local</Computer>
+      <Security UserID="S-1-5-18"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1569.002,technique_name=Service Execution</Data>
+      <Data Name="UtcTime">2024-01-15 11:28:06.002</Data>
+      <Data Name="ProcessGuid">{E7F8A9B0-4B1E-65A5-0B01-000000002400}</Data>
+      <Data Name="ProcessId">8844</Data>
+      <Data Name="Image">C:\Windows\PSEXESVC.exe</Data>
+      <Data Name="FileVersion">2.43</Data>
+      <Data Name="Description">PsExec Service</Data>
+      <Data Name="Product">Sysinternals PsExec</Data>
+      <Data Name="Company">Sysinternals</Data>
+      <Data Name="OriginalFileName">psexesvc.exe</Data>
+      <Data Name="CommandLine">C:\Windows\PSEXESVC.exe</Data>
+      <Data Name="CurrentDirectory">C:\Windows\system32\</Data>
+      <Data Name="User">NT AUTHORITY\SYSTEM</Data>
+      <Data Name="LogonGuid">{E7F8A9B0-0A12-65A5-E703-000000000000}</Data>
+      <Data Name="LogonId">0x3E7</Data>
+      <Data Name="TerminalSessionId">0</Data>
+      <Data Name="IntegrityLevel">System</Data>
+      <Data Name="Hashes">SHA256=AD6B98C01DC3A1C96E9652DFC7B2F05CCAE1673D8D2A4E2D8F91F5E97C6C7E41,MD5=27304B246C7D5B4E149124D5F93C5B01,IMPHASH=E96A73C7BF33A464C510EDE582318BF2</Data>
+      <Data Name="ParentProcessGuid">{E7F8A9B0-0A12-65A5-0100-000000002400}</Data>
+      <Data Name="ParentProcessId">648</Data>
+      <Data Name="ParentImage">C:\Windows\System32\services.exe</Data>
+      <Data Name="ParentCommandLine">C:\Windows\system32\services.exe</Data>
+      <Data Name="ParentUser">NT AUTHORITY\SYSTEM</Data>
+    </EventData>
+  </Event>
+
+  <!-- Event 6: Remote command execution on target -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T11:28:06.408Z"/>
+      <EventRecordID>45304</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="1892" ThreadID="2108"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FILE-SRV01.corp.acme.local</Computer>
+      <Security UserID="S-1-5-18"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1136.001,technique_name=Local Account</Data>
+      <Data Name="UtcTime">2024-01-15 11:28:06.395</Data>
+      <Data Name="ProcessGuid">{E7F8A9B0-4B1F-65A5-0C01-000000002400}</Data>
+      <Data Name="ProcessId">9108</Data>
+      <Data Name="Image">C:\Windows\System32\cmd.exe</Data>
+      <Data Name="FileVersion">10.0.19041.1 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">Windows Command Processor</Data>
+      <Data Name="Product">Microsoft Windows Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">Cmd.Exe</Data>
+      <Data Name="CommandLine">cmd.exe /c "net user backdoor P@ssw0rd123 /add &amp;&amp; net localgroup administrators backdoor /add"</Data>
+      <Data Name="CurrentDirectory">C:\Windows\system32\</Data>
+      <Data Name="User">NT AUTHORITY\SYSTEM</Data>
+      <Data Name="LogonGuid">{E7F8A9B0-0A12-65A5-E703-000000000000}</Data>
+      <Data Name="LogonId">0x3E7</Data>
+      <Data Name="TerminalSessionId">0</Data>
+      <Data Name="IntegrityLevel">System</Data>
+      <Data Name="Hashes">SHA256=B99D61D874728EDC0918CA0EB10EAB93D381E7367E377406E65963366C874714,MD5=8A2122E8162DBEF04694B9C3E0B6CDEE,IMPHASH=272245E2988E1E430500B852C4FB5E18</Data>
+      <Data Name="ParentProcessGuid">{E7F8A9B0-4B1E-65A5-0B01-000000002400}</Data>
+      <Data Name="ParentProcessId">8844</Data>
+      <Data Name="ParentImage">C:\Windows\PSEXESVC.exe</Data>
+      <Data Name="ParentCommandLine">C:\Windows\PSEXESVC.exe</Data>
+      <Data Name="ParentUser">NT AUTHORITY\SYSTEM</Data>
+    </EventData>
+  </Event>
+
+  <!-- Event 7: Network connection from target back to source (PSEXESVC communicating) -->
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>3</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>3</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T11:28:06.512Z"/>
+      <EventRecordID>45305</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="1892" ThreadID="2108"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FILE-SRV01.corp.acme.local</Computer>
+      <Security UserID="S-1-5-18"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1021.002,technique_name=SMB/Windows Admin Shares</Data>
+      <Data Name="UtcTime">2024-01-15 11:28:06.500</Data>
+      <Data Name="ProcessGuid">{E7F8A9B0-4B1E-65A5-0B01-000000002400}</Data>
+      <Data Name="ProcessId">8844</Data>
+      <Data Name="Image">C:\Windows\PSEXESVC.exe</Data>
+      <Data Name="User">NT AUTHORITY\SYSTEM</Data>
+      <Data Name="Protocol">tcp</Data>
+      <Data Name="Initiated">false</Data>
+      <Data Name="SourceIsIpv6">false</Data>
+      <Data Name="SourceIp">10.0.2.100</Data>
+      <Data Name="SourceHostname">FILE-SRV01.corp.acme.local</Data>
+      <Data Name="SourcePort">445</Data>
+      <Data Name="SourcePortName">microsoft-ds</Data>
+      <Data Name="DestinationIsIpv6">false</Data>
+      <Data Name="DestinationIp">10.0.1.25</Data>
+      <Data Name="DestinationHostname">IT-ADMIN-WS01.corp.acme.local</Data>
+      <Data Name="DestinationPort">49842</Data>
+      <Data Name="DestinationPortName"/>
+    </EventData>
+  </Event>
+</Events>

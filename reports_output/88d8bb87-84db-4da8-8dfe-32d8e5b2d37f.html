@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Investigation Report — 88d8bb87-84db-4da8-8dfe-32d8e5b2d37f</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e1a;
+            color: #c8d6e5;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #1a2332;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #00ff88;
+            font-size: 28px;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+        .header .subtitle {
+            color: #00d4ff;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .header .meta {
+            color: #5a6c7d;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .section {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section h2 {
+            color: #00d4ff;
+            font-size: 18px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .verdict-badge {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .verdict-tp {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 2px solid #ef4444;
+        }
+        .verdict-fp {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 2px solid #22c55e;
+        }
+        .verdict-esc {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+            border: 2px solid #eab308;
+        }
+        .confidence-bar {
+            height: 8px;
+            background: #1e293b;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #1e293b;
+            font-size: 13px;
+        }
+        th {
+            background: #0f172a;
+            color: #00d4ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        tr:hover { background: rgba(0, 212, 255, 0.05); }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border-radius: 3px;
+            font-size: 11px;
+            margin: 2px;
+        }
+        .risk-high { color: #ef4444; }
+        .risk-medium { color: #eab308; }
+        .risk-low { color: #22c55e; }
+        .timeline-item {
+            padding: 12px 0 12px 24px;
+            border-left: 2px solid #1e293b;
+            position: relative;
+            margin-left: 10px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 16px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+        }
+        .timeline-item .stage {
+            color: #00d4ff;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .timeline-item .detail {
+            color: #8899aa;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .reasoning-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00d4ff;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .action-item {
+            padding: 8px 12px;
+            background: #0f172a;
+            border-left: 3px solid #00ff88;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .raw-content {
+            background: #0a0e1a;
+            border: 1px solid #1e293b;
+            padding: 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            color: #8899aa;
+        }
+        .mitre-link {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        .mitre-link:hover { text-decoration: underline; }
+        .executive-summary {
+            font-size: 15px;
+            color: #e2e8f0;
+            line-height: 1.8;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #4a5568;
+            font-size: 11px;
+            border-top: 1px solid #1e293b;
+            margin-top: 30px;
+        }
+        @media print {
+            body { background: #fff; color: #333; }
+            .section { border-color: #ddd; background: #f9f9f9; }
+            .header h1 { color: #1a1a2e; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>[ SOC-AI-AGENT ]</h1>
+            <div class="subtitle">Automated Investigation Report</div>
+            <div class="meta">
+                Alert ID: 88d8bb87-84db-4da8-8dfe-32d8e5b2d37f | Generated: 2026-02-13 04:17:52 UTC
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2>Executive Summary</h2>
+            <div class="executive-summary">
+                
+                    Verdict: NEEDS_ESCALATION (37.075% confidence) — suspicious activity requiring human review. Key factors: IOC 1.0.0.0 flagged by 1 source(s) (risk score: 51.5). Suspicious command pattern: vssadmin.*delete|bcdedit.*recoveryenabled IOCs appeared in 2 previously confirmed true positive(s). Strong correlation with known malicious activity.
+                
+            </div>
+        </div>
+
+        <!-- Verdict -->
+        <div class="section" style="text-align: center;">
+            <h2>Verdict</h2>
+            
+                
+                    <div class="verdict-badge verdict-esc">NEEDS ESCALATION</div>
+                
+                <div style="margin-top: 16px; font-size: 24px; color: #e2e8f0;">
+                    Confidence: 37.1%
+                </div>
+                <div class="confidence-bar" style="max-width: 400px; margin: 12px auto;">
+                    
+                        <div class="confidence-fill" style="width: 37.1%; background: #eab308;"></div>
+                    
+                </div>
+            
+        </div>
+
+        <!-- Alert Details -->
+        <div class="section">
+            <h2>Alert Details</h2>
+            <table>
+                <tr><th style="width: 180px;">Field</th><th>Value</th></tr>
+                <tr><td>Alert Type</td><td>sysmon</td></tr>
+                <tr><td>Timestamp</td><td>2024-01-15T16:42:22.843000</td></tr>
+                <tr><td>Classification</td><td>ransomware</td></tr>
+                <tr><td>Initial Severity</td><td>CRITICAL</td></tr>
+                
+                    
+                    
+                    <tr><td>Source Host</td><td>ACCT-WS07.corp.acme.local</td></tr>
+                    <tr><td>User</td><td>ACME\rjones</td></tr>
+                    <tr><td>Process</td><td>C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</td></tr>
+                    <tr><td>Command Line</td><td style="font-family: monospace; font-size: 12px;">bcdedit.exe /set {default} bootstatuspolicy ignoreallfailures</td></tr>
+                    <tr><td>Parent Process</td><td>C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</td></tr>
+                
+            </table>
+        </div>
+
+        <!-- Investigation Timeline -->
+        
+        <div class="section">
+            <h2>Investigation Timeline</h2>
+            
+            <div class="timeline-item">
+                <div class="stage">Triage — Complete</div>
+                <div class="detail">Classified as ransomware. Severity: CRITICAL.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Ioc Extraction — Complete</div>
+                <div class="detail">Extracted 22 IOCs: {&#39;sha256&#39;: 1, &#39;md5&#39;: 6, &#39;url&#39;: 1, &#39;ipv4&#39;: 1, &#39;domain&#39;: 1, &#39;file_path_windows&#39;: 12}</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Enrichment — Complete</div>
+                <div class="detail">Enriched 22 IOCs across threat intel sources.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Correlation — Complete</div>
+                <div class="detail">Found 6 related investigation(s). Shared IOCs: 1.0.0.0 (seen 2x), C:\Windows\explorer.exe (seen 2x), 0fd5c9a25aae055c1f8f5a8ae76c00c2 (seen 1x). 2 related investigation(s) were previously confirmed as true positives. This significantly increases the likelihood of this alert being malicious.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Att&amp;ck Mapping — Complete</div>
+                <div class="detail">Matched 2 techniques across 1 tactics.</div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="stage">Verdict — Complete</div>
+                <div class="detail">NEEDS_ESCALATION (confidence: 37.1%)</div>
+            </div>
+            
+        </div>
+        
+
+        <!-- IOC Enrichment -->
+        
+        <div class="section">
+            <h2>IOC Enrichment Results</h2>
+            <table>
+                <tr>
+                    <th>IOC</th>
+                    <th>Type</th>
+                    <th>Risk Score</th>
+                    <th>Sources Flagged</th>
+                    <th>Summary</th>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">b6e66b47f7a236e1eabc25c5cf9581ba7cd988db8a3b74eda3d1ac651ae62e57</td>
+                    <td><span class="tag">sha256</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">2c41d8394a2a7de5ae4f1de118360ff8</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">2a40b2668ed9b73c8d0e6c9b0e1dfab0</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">67f87b343f1e84c7f88b182f35c8e5ff</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">0fd5c9a25aae055c1f8f5a8ae76c00c2</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">12b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7</td>
+                    <td><span class="tag">md5</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">http://schemas.microsoft.com/win/2004/08/events/event</td>
+                    <td><span class="tag">url</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 3</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/94 engines flagged URL as malicious.<br>
+                        
+                            
+                        
+                            
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">1.0.0.0</td>
+                    <td><span class="tag">ipv4</span></td>
+                    <td>
+                        
+                            <span class="risk-medium">51.5</span>
+                        
+                    </td>
+                    <td>1 / 5</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. AS: CLOUDFLARENET, Country: N/A<br>
+                        
+                            AbuseIPDB: Abuse confidence 3%, 1 reports. ISP: APNIC and Cloudflare DNS Resolver project, Usage: Content Delivery Network, Country: AU<br>
+                        
+                            
+                        
+                            OTX: 50 pulses reference this IOC. Tags: archivesha1, archivesha256, powershell, desktop, look<br>
+                        
+                            GreyNoise: IP not observed scanning the internet<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">schemas.microsoft.com</td>
+                    <td><span class="tag">domain</span></td>
+                    <td>
+                        
+                            <span class="risk-low">15.0</span>
+                        
+                    </td>
+                    <td>0 / 4</td>
+                    <td style="font-size: 12px;">
+                        
+                            VT: 0/93 engines flagged as malicious. Registrar: N/A<br>
+                        
+                            OTX: 0 pulses reference this IOC. Tags: none<br>
+                        
+                            
+                        
+                            WHOIS: Registrar=MarkMonitor, Inc., Created=1991-05-02 04:00:00, Expires=2027-05-03 04:00:00, Country=N/A<br>
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\Downloads</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Windows\explorer.exe</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Windows\System32\vssadmin.exe</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\AppData\Local\Temp</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Windows\System32\bcdedit.exe</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\Documents\Financial_Report_Q4_2023.xlsx.locked</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\Documents\Budget_Projections_2024.docx.locked</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\Documents\Employee_Salaries_Confidential.pdf.locked</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\Documents\Client_Contracts_2023.zip.locked</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\Documents\Strategic_Plan_Presentation.pptx.locked</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Users\rjones\Documents\DECRYPT_YOUR_FILES.txt</td>
+                    <td><span class="tag">file_path_windows</span></td>
+                    <td>
+                        
+                            <span class="risk-low">0.0</span>
+                        
+                    </td>
+                    <td>0 / 0</td>
+                    <td style="font-size: 12px;">
+                        
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+        
+
+        <!-- MITRE ATT&CK Mapping -->
+        
+        <div class="section">
+            <h2>MITRE ATT&CK Mapping</h2>
+            <table>
+                <tr>
+                    <th>Tactic</th>
+                    <th>Technique ID</th>
+                    <th>Technique Name</th>
+                    <th>Evidence</th>
+                </tr>
+                
+                <tr>
+                    <td>Impact</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1490/" target="_blank">
+                            T1490
+                        </a>
+                    </td>
+                    <td>Inhibit System Recovery</td>
+                    <td style="font-size: 12px; font-family: monospace;">Encrypted for Impact 2024-01-15 16:42:22.843 {A1F23B4C-9D2E-65A5-4A08-000000002200} 9412 C:\Users\rj</td>
+                </tr>
+                
+                <tr>
+                    <td>Impact</td>
+                    <td>
+                        <a class="mitre-link" href="https://attack.mitre.org/techniques/T1486/" target="_blank">
+                            T1486
+                        </a>
+                    </td>
+                    <td>Data Encrypted for Impact</td>
+                    <td style="font-size: 12px; font-family: monospace;">Encrypted for Impact 2024-01-15 16:42:22.843 {A1F23B4C-9D2E-65A5-4A08-000000002200} 9412 C:\Users\rj</td>
+                </tr>
+                
+            </table>
+            
+            <div style="margin-top: 16px; padding: 12px; background: #0a0e1a; border-radius: 4px; font-size: 13px;">
+                Attack chain analysis:<br>  1. **Impact**: Inhibit System Recovery (T1490), Data Encrypted for Impact (T1486)
+            </div>
+            
+        </div>
+        
+
+        <!-- Correlation -->
+        
+        <div class="section">
+            <h2>Historical Correlation</h2>
+            <p style="margin-bottom: 12px;">Found 6 related investigation(s). Shared IOCs: 1.0.0.0 (seen 2x), C:\Windows\explorer.exe (seen 2x), 0fd5c9a25aae055c1f8f5a8ae76c00c2 (seen 1x). 2 related investigation(s) were previously confirmed as true positives. This significantly increases the likelihood of this alert being malicious.</p>
+            
+            <table>
+                <tr>
+                    <th>Alert ID</th>
+                    <th>Type</th>
+                    <th>Verdict</th>
+                    <th>Matching IOC</th>
+                    <th>Date</th>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">047f07d3...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-medium">NEEDS_ESCALATION</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">0fd5c9a25aae055c1f8f5a8ae76c00c2</td>
+                    <td>2026-02-13T04:00:26.462208</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">5023fdde...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-medium">NEEDS_ESCALATION</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">1.0.0.0</td>
+                    <td>2026-02-13T03:55:04.889713</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">5ead2fc7...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-high">TRUE_POSITIVE</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">1.0.0.0</td>
+                    <td>2026-02-13T04:13:33.500328</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">b57401c7...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-low">FALSE_POSITIVE</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Windows\explorer.exe</td>
+                    <td>2026-02-13T04:02:04.046647</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">a6461952...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-high">TRUE_POSITIVE</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">C:\Windows\explorer.exe</td>
+                    <td>2026-02-13T04:02:10.151855</td>
+                </tr>
+                
+                <tr>
+                    <td style="font-family: monospace; font-size: 12px;">0390d2d6...</td>
+                    <td>sysmon</td>
+                    <td>
+                        
+                            <span class="risk-medium">NEEDS_ESCALATION</span>
+                        
+                    </td>
+                    <td style="font-family: monospace; font-size: 12px;">http://schemas.microsoft.com/win/2004/08/events/event</td>
+                    <td>2026-02-13T04:01:06.335532</td>
+                </tr>
+                
+            </table>
+            
+        </div>
+        
+
+        <!-- Reasoning Chain -->
+        
+        <div class="section">
+            <h2>Reasoning Chain</h2>
+            
+            <div class="reasoning-item">IOC 1.0.0.0 flagged by 1 source(s) (risk score: 51.5).</div>
+            
+            <div class="reasoning-item">Suspicious command pattern: vssadmin.*delete|bcdedit.*recoveryenabled</div>
+            
+            <div class="reasoning-item">IOCs appeared in 2 previously confirmed true positive(s). Strong correlation with known malicious activity.</div>
+            
+            <div class="reasoning-item">IOCs correlated across 6 previous investigations.</div>
+            
+            <div class="reasoning-item">High-impact tactics detected: Impact</div>
+            
+            <div class="reasoning-item">Matched 2 MITRE ATT&amp;CK technique(s) across 1 tactic(s).</div>
+            
+            <div class="reasoning-item">No temporal risk factors identified.</div>
+            
+
+            
+            <h3 style="color: #00d4ff; margin-top: 16px; font-size: 14px;">Score Breakdown</h3>
+            <table>
+                <tr><th>Component</th><th>Score</th><th>Weight</th><th>Weighted Score</th></tr>
+                
+                <tr>
+                    <td>Enrichment</td>
+                    <td>51.5</td>
+                    <td>35.0%</td>
+                    <td>18.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Behavioral</td>
+                    <td>40.0</td>
+                    <td>25.0%</td>
+                    <td>10.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Correlation</td>
+                    <td>55.0</td>
+                    <td>20.0%</td>
+                    <td>11.0</td>
+                </tr>
+                
+                <tr>
+                    <td>Mitre</td>
+                    <td>26</td>
+                    <td>15.0%</td>
+                    <td>3.9</td>
+                </tr>
+                
+                <tr>
+                    <td>Temporal</td>
+                    <td>0.0</td>
+                    <td>5.0%</td>
+                    <td>0.0</td>
+                </tr>
+                
+            </table>
+            
+        </div>
+        
+
+        <!-- Recommended Actions -->
+        
+        <div class="section">
+            <h2>Recommended Response Actions</h2>
+            
+            <div class="action-item">1. Escalate to senior analyst for manual review.</div>
+            
+            <div class="action-item">2. Gather additional context from the host and user.</div>
+            
+            <div class="action-item">3. Do not take destructive action until further analysis is complete.</div>
+            
+        </div>
+        
+
+        <!-- Raw Evidence -->
+        <div class="section">
+            <h2>Raw Evidence</h2>
+            <div class="raw-content">&lt;Events&gt;
+  &lt;!-- Stage 1: Initial execution of ransomware dropper --&gt;
+  &lt;Event xmlns=&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;&gt;
+    &lt;System&gt;
+      &lt;Provider Name=&#34;Microsoft-Windows-Sysmon&#34; Guid=&#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;/&gt;
+      &lt;EventID&gt;1&lt;/EventID&gt;
+      &lt;Version&gt;5&lt;/Version&gt;
+      &lt;Level&gt;4&lt;/Level&gt;
+      &lt;Task&gt;1&lt;/Task&gt;
+      &lt;Opcode&gt;0&lt;/Opcode&gt;
+      &lt;Keywords&gt;0x8000000000000000&lt;/Keywords&gt;
+      &lt;TimeCreated SystemTime=&#34;2024-01-15T16:42:18.204Z&#34;/&gt;
+      &lt;EventRecordID&gt;112450&lt;/EventRecordID&gt;
+      &lt;Correlation/&gt;
+      &lt;Execution ProcessID=&#34;2844&#34; ThreadID=&#34;3160&#34;/&gt;
+      &lt;Channel&gt;Microsoft-Windows-Sysmon/Operational&lt;/Channel&gt;
+      &lt;Computer&gt;ACCT-WS07.corp.acme.local&lt;/Computer&gt;
+      &lt;Security UserID=&#34;S-1-5-21-3541430928-2051711210-1391384369-1189&#34;/&gt;
+    &lt;/System&gt;
+    &lt;EventData&gt;
+      &lt;Data Name=&#34;RuleName&#34;&gt;technique_id=T1204.002,technique_name=Malicious File&lt;/Data&gt;
+      &lt;Data Name=&#34;UtcTime&#34;&gt;2024-01-15 16:42:18.192&lt;/Data&gt;
+      &lt;Data Name=&#34;ProcessGuid&#34;&gt;{A1F23B4C-9D2E-65A5-4A08-000000002200}&lt;/Data&gt;
+      &lt;Data Name=&#34;ProcessId&#34;&gt;9412&lt;/Data&gt;
+      &lt;Data Name=&#34;Image&#34;&gt;C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe&lt;/Data&gt;
+      &lt;Data Name=&#34;FileVersion&#34;&gt;1.0.0.0&lt;/Data&gt;
+      &lt;Data Name=&#34;Description&#34;/&gt;
+      &lt;Data Name=&#34;Product&#34;/&gt;
+      &lt;Data Name=&#34;Company&#34;/&gt;
+      &lt;Data Name=&#34;OriginalFileName&#34;&gt;cryptolocker_v3.exe&lt;/Data&gt;
+      &lt;Data Name=&#34;CommandLine&#34;&gt;&#34;C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe&#34;&lt;/Data&gt;
+      &lt;Data Name=&#34;CurrentDirectory&#34;&gt;C:\Users\rjones\Downloads\&lt;/Data&gt;
+      &lt;Data Name=&#34;User&#34;&gt;ACME\rjones&lt;/Data&gt;
+      &lt;Data Name=&#34;LogonGuid&#34;&gt;{A1F23B4C-2D1A-65A5-E2A4-070000000000}&lt;/Data&gt;
+      &lt;Data Name=&#34;LogonId&#34;&gt;0x7A4E2&lt;/Data&gt;
+      &lt;Data Name=&#34;TerminalSessionId&#34;&gt;1&lt;/Data&gt;
+      &lt;Data Name=&#34;IntegrityLevel&#34;&gt;High&lt;/Data&gt;
+      &lt;Data Name=&#34;Hashes&#34;&gt;SHA256=3F2B4A5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C4D5E6F7A8B9C0D1E2F,MD5=9E8D7C6B5A4F3E2D1C0B9A8F7E6D5C4B,IMPHASH=2C41D8394A2A7DE5AE4F1DE118360FF8&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentProcessGuid&#34;&gt;{A1F23B4C-2D30-65A5-0F01-000000002200}&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentProcessId&#34;&gt;4120&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentImage&#34;&gt;C:\Windows\explorer.exe&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentCommandLine&#34;&gt;C:\Windows\explorer.exe&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentUser&#34;&gt;ACME\rjones&lt;/Data&gt;
+    &lt;/EventData&gt;
+  &lt;/Event&gt;
+
+  &lt;!-- Stage 2: Delete Volume Shadow Copies --&gt;
+  &lt;Event xmlns=&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;&gt;
+    &lt;System&gt;
+      &lt;Provider Name=&#34;Microsoft-Windows-Sysmon&#34; Guid=&#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;/&gt;
+      &lt;EventID&gt;1&lt;/EventID&gt;
+      &lt;Version&gt;5&lt;/Version&gt;
+      &lt;Level&gt;4&lt;/Level&gt;
+      &lt;Task&gt;1&lt;/Task&gt;
+      &lt;Opcode&gt;0&lt;/Opcode&gt;
+      &lt;Keywords&gt;0x8000000000000000&lt;/Keywords&gt;
+      &lt;TimeCreated SystemTime=&#34;2024-01-15T16:42:19.871Z&#34;/&gt;
+      &lt;EventRecordID&gt;112451&lt;/EventRecordID&gt;
+      &lt;Correlation/&gt;
+      &lt;Execution ProcessID=&#34;2844&#34; ThreadID=&#34;3160&#34;/&gt;
+      &lt;Channel&gt;Microsoft-Windows-Sysmon/Operational&lt;/Channel&gt;
+      &lt;Computer&gt;ACCT-WS07.corp.acme.local&lt;/Computer&gt;
+      &lt;Security UserID=&#34;S-1-5-21-3541430928-2051711210-1391384369-1189&#34;/&gt;
+    &lt;/System&gt;
+    &lt;EventData&gt;
+      &lt;Data Name=&#34;RuleName&#34;&gt;technique_id=T1490,technique_name=Inhibit System Recovery&lt;/Data&gt;
+      &lt;Data Name=&#34;UtcTime&#34;&gt;2024-01-15 16:42:19.860&lt;/Data&gt;
+      &lt;Data Name=&#34;ProcessGuid&#34;&gt;{A1F23B4C-9D30-65A5-4B08-000000002200}&lt;/Data&gt;
+      &lt;Data Name=&#34;ProcessId&#34;&gt;9504&lt;/Data&gt;
+      &lt;Data Name=&#34;Image&#34;&gt;C:\Windows\System32\vssadmin.exe&lt;/Data&gt;
+      &lt;Data Name=&#34;FileVersion&#34;&gt;10.0.19041.1 (WinBuild.160101.0800)&lt;/Data&gt;
+      &lt;Data Name=&#34;Description&#34;&gt;Command Line Interface for Microsoft Volume Shadow Copy Service&lt;/Data&gt;
+      &lt;Data Name=&#34;Product&#34;&gt;Microsoft Windows Operating System&lt;/Data&gt;
+      &lt;Data Name=&#34;Company&#34;&gt;Microsoft Corporation&lt;/Data&gt;
+      &lt;Data Name=&#34;OriginalFileName&#34;&gt;VSSADMIN.EXE&lt;/Data&gt;
+      &lt;Data Name=&#34;CommandLine&#34;&gt;vssadmin.exe delete shadows /all /quiet&lt;/Data&gt;
+      &lt;Data Name=&#34;CurrentDirectory&#34;&gt;C:\Users\rjones\AppData\Local\Temp\&lt;/Data&gt;
+      &lt;Data Name=&#34;User&#34;&gt;ACME\rjones&lt;/Data&gt;
+      &lt;Data Name=&#34;LogonGuid&#34;&gt;{A1F23B4C-2D1A-65A5-E2A4-070000000000}&lt;/Data&gt;
+      &lt;Data Name=&#34;LogonId&#34;&gt;0x7A4E2&lt;/Data&gt;
+      &lt;Data Name=&#34;TerminalSessionId&#34;&gt;1&lt;/Data&gt;
+      &lt;Data Name=&#34;IntegrityLevel&#34;&gt;High&lt;/Data&gt;
+      &lt;Data Name=&#34;Hashes&#34;&gt;SHA256=B6E66B47F7A236E1EABC25C5CF9581BA7CD988DB8A3B74EDA3D1AC651AE62E57,MD5=2A40B2668ED9B73C8D0E6C9B0E1DFAB0,IMPHASH=67F87B343F1E84C7F88B182F35C8E5FF&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentProcessGuid&#34;&gt;{A1F23B4C-9D2E-65A5-4A08-000000002200}&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentProcessId&#34;&gt;9412&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentImage&#34;&gt;C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentCommandLine&#34;&gt;&#34;C:\Users\rjones\AppData\Local\Temp\invoice_2024_final.exe&#34;&lt;/Data&gt;
+      &lt;Data Name=&#34;ParentUser&#34;&gt;ACME\rjones&lt;/Data&gt;
+    &lt;/EventData&gt;
+  &lt;/Event&gt;
+
+  &lt;!-- Stage 3: Disable recovery mode via bcdedit --&gt;
+  &lt;Event xmlns=&#34;http://schemas.microsoft.com/win/2004/08/events/event&#34;&gt;
+    &lt;System&gt;
+      &lt;Provider Name=&#34;Microsoft-Windows-Sysmon&#34; Guid=&#34;{5770385F-C22A-4</div>
+        </div>
+
+        <div class="footer">
+            Generated by SOC-AI-Agent | Automated Security Investigation Platform<br>
+            Report generated at 2026-02-13 04:17:52 UTC
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+Jan 15 03:22:01 prod-ssh-bastion sshd[28401]: Failed password for root from 185.220.101.34 port 44312 ssh2
+Jan 15 03:22:03 prod-ssh-bastion sshd[28401]: Failed password for root from 185.220.101.34 port 44312 ssh2
+Jan 15 03:22:05 prod-ssh-bastion sshd[28401]: Failed password for root from 185.220.101.34 port 44312 ssh2
+Jan 15 03:22:06 prod-ssh-bastion sshd[28403]: Failed password for invalid user administrator from 185.220.101.34 port 44398 ssh2
+Jan 15 03:22:08 prod-ssh-bastion sshd[28403]: Invalid user administrator from 185.220.101.34 port 44398
+Jan 15 03:22:10 prod-ssh-bastion sshd[28405]: Failed password for root from 185.220.101.34 port 44471 ssh2
+Jan 15 03:22:12 prod-ssh-bastion sshd[28407]: Failed password for invalid user test from 185.220.101.34 port 44520 ssh2
+Jan 15 03:22:12 prod-ssh-bastion sshd[28407]: Invalid user test from 185.220.101.34 port 44520
+Jan 15 03:22:15 prod-ssh-bastion sshd[28409]: Failed password for admin from 185.220.101.34 port 44583 ssh2
+Jan 15 03:22:17 prod-ssh-bastion sshd[28409]: Failed password for admin from 185.220.101.34 port 44583 ssh2
+Jan 15 03:22:19 prod-ssh-bastion sshd[28411]: Failed password for invalid user ubuntu from 185.220.101.34 port 44651 ssh2
+Jan 15 03:22:19 prod-ssh-bastion sshd[28411]: Invalid user ubuntu from 185.220.101.34 port 44651
+Jan 15 03:22:22 prod-ssh-bastion sshd[28413]: Failed password for invalid user postgres from 185.220.101.34 port 44702 ssh2
+Jan 15 03:22:22 prod-ssh-bastion sshd[28413]: Invalid user postgres from 185.220.101.34 port 44702
+Jan 15 03:22:25 prod-ssh-bastion sshd[28415]: Failed password for root from 185.220.101.34 port 44768 ssh2
+Jan 15 03:22:27 prod-ssh-bastion sshd[28417]: Failed password for invalid user oracle from 185.220.101.34 port 44831 ssh2
+Jan 15 03:22:27 prod-ssh-bastion sshd[28417]: Invalid user oracle from 185.220.101.34 port 44831
+Jan 15 03:22:30 prod-ssh-bastion sshd[28419]: Failed password for admin from 185.220.101.34 port 44892 ssh2
+Jan 15 03:22:33 prod-ssh-bastion sshd[28421]: Failed password for invalid user user from 185.220.101.34 port 44955 ssh2
+Jan 15 03:22:35 prod-ssh-bastion sshd[28423]: Failed password for invalid user deploy from 185.220.101.34 port 45018 ssh2
+Jan 15 03:22:35 prod-ssh-bastion sshd[28423]: Invalid user deploy from 185.220.101.34 port 45018
+Jan 15 03:22:38 prod-ssh-bastion sshd[28425]: Failed password for root from 185.220.101.34 port 45081 ssh2
+Jan 15 03:22:40 prod-ssh-bastion sshd[28427]: Failed password for admin from 185.220.101.34 port 45144 ssh2
+Jan 15 03:22:43 prod-ssh-bastion sshd[28429]: Failed password for invalid user ftpuser from 185.220.101.34 port 45207 ssh2
+Jan 15 03:22:43 prod-ssh-bastion sshd[28429]: Invalid user ftpuser from 185.220.101.34 port 45207
+Jan 15 03:22:46 prod-ssh-bastion sshd[28431]: Failed password for invalid user guest from 185.220.101.34 port 45270 ssh2
+Jan 15 03:22:46 prod-ssh-bastion sshd[28431]: Invalid user guest from 185.220.101.34 port 45270
+Jan 15 03:22:49 prod-ssh-bastion sshd[28433]: Failed password for admin from 185.220.101.34 port 45333 ssh2
+Jan 15 03:22:52 prod-ssh-bastion sshd[28435]: Failed password for root from 185.220.101.34 port 45396 ssh2
+Jan 15 03:22:55 prod-ssh-bastion sshd[28437]: Failed password for invalid user webmaster from 185.220.101.34 port 45459 ssh2
+Jan 15 03:22:55 prod-ssh-bastion sshd[28437]: Invalid user webmaster from 185.220.101.34 port 45459
+Jan 15 03:22:58 prod-ssh-bastion sshd[28439]: Failed password for invalid user pi from 185.220.101.34 port 45522 ssh2
+Jan 15 03:22:58 prod-ssh-bastion sshd[28439]: Invalid user pi from 185.220.101.34 port 45522
+Jan 15 03:23:01 prod-ssh-bastion sshd[28441]: Failed password for admin from 185.220.101.34 port 45585 ssh2
+Jan 15 03:23:04 prod-ssh-bastion sshd[28443]: Failed password for root from 185.220.101.34 port 45648 ssh2
+Jan 15 03:23:07 prod-ssh-bastion sshd[28445]: Failed password for admin from 185.220.101.34 port 45711 ssh2
+Jan 15 03:23:10 prod-ssh-bastion sshd[28447]: Failed password for admin from 185.220.101.34 port 45774 ssh2
+Jan 15 03:23:13 prod-ssh-bastion sshd[28449]: Failed password for admin from 185.220.101.34 port 45837 ssh2
+Jan 15 03:23:16 prod-ssh-bastion sshd[28451]: Failed password for admin from 185.220.101.34 port 45900 ssh2
+Jan 15 03:23:18 prod-ssh-bastion sshd[28453]: Accepted password for admin from 185.220.101.34 port 45963 ssh2
+Jan 15 03:23:18 prod-ssh-bastion sshd[28453]: pam_unix(sshd:session): session opened for user admin(uid=1001) by (uid=0)
+Jan 15 03:23:18 prod-ssh-bastion systemd-logind[812]: New session 4827 of user admin.
